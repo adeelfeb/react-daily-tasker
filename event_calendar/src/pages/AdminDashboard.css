@@ -187,7 +187,27 @@
 /* Toolbar below header */
 .dashboard-toolbar { border-bottom: 1px solid var(--color-border); background: var(--color-surface); }
 .toolbar-row { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; }
-.toolbar-left { display: flex; gap: 0.5rem; align-items: center; }
+.toolbar-left { display: flex; gap: 0.5rem; align-items: center; flex-wrap: nowrap; }
+.toolbar-left .btn { white-space: nowrap; }
+.toolbar-right { display: flex; align-items: center; gap: 0.5rem; }
+
+/* Segmented control to switch between Month (Simple) and Advanced calendar */
+.segmented {
+  display: inline-flex;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.segmented button {
+  border: 0;
+  background: var(--color-surface-2);
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+.segmented button.active {
+  background: var(--color-accent);
+  color: #0b0e14;
+}
 
 .btn-danger {
   background-color: #dc3545;
@@ -201,6 +221,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .toolbar-left { flex-wrap: wrap; }
   .header-content {
     flex-direction: column;
     text-align: center;

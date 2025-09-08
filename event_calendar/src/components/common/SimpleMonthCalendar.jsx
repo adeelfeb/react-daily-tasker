@@ -31,6 +31,7 @@ const SimpleMonthCalendar = ({
   onEventClick,
   onDateClick,
   initialDate = new Date(),
+  enableInternalViewModal = true,
 }) => {
   const [current, setCurrent] = useState(initialDate);
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -58,7 +59,9 @@ const SimpleMonthCalendar = ({
   const goToday = () => setCurrent(new Date());
 
   const handleEventClick = (event) => {
-    setSelectedEvent(event);
+    if (enableInternalViewModal) {
+      setSelectedEvent(event);
+    }
     if (onEventClick) {
       onEventClick(event);
     }
@@ -79,8 +82,13 @@ const SimpleMonthCalendar = ({
   };
 
   const handleDayEventClick = (event) => {
-    setSelectedEvent(event);
     handleCloseDayModal();
+    if (enableInternalViewModal) {
+      setSelectedEvent(event);
+    }
+    if (onEventClick) {
+      onEventClick(event);
+    }
   };
 
   return (
@@ -134,7 +142,7 @@ const SimpleMonthCalendar = ({
         })}
       </div>
       
-      {selectedEvent && (
+      {enableInternalViewModal && selectedEvent && (
         <EventViewModal
           event={selectedEvent}
           onClose={handleCloseModal}

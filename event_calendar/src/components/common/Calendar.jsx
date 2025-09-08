@@ -59,7 +59,7 @@ const CalendarComponent = ({
   onEventResize,
   onCreateOverlapping
 }) => {
-  const [view, setView] = useState(CALENDAR_VIEWS.MONTH);
+  const [view, setView] = useState(CALENDAR_VIEWS.WEEK);
   const [date, setDate] = useState(new Date());
 
   const handleSelectEvent = useCallback((event) => {
@@ -133,7 +133,7 @@ const CalendarComponent = ({
         endAccessor="end"
         tooltipAccessor={() => ''}
         style={{ height: 600 }}
-        views={['month', 'week', 'day']}
+        views={['week', 'day']}
         view={view}
         onView={setView}
         date={date}
@@ -145,9 +145,6 @@ const CalendarComponent = ({
         eventPropGetter={eventStyleGetter}
         formats={formats}
         components={{
-          month: {
-            event: (props) => <MonthEventItem {...props} />,
-          },
           week: {
             event: (props) => <WeekDayEventItem {...props} onCreateOverlapping={onCreateOverlapping} />,
           },
@@ -159,7 +156,6 @@ const CalendarComponent = ({
           today: 'Today',
           previous: 'Back',
           next: 'Next',
-          month: 'Month',
           week: 'Week',
           day: 'Day',
           showMore: (total) => `+${total} more`,
