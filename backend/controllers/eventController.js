@@ -179,12 +179,50 @@ export const updateEvent = async (req, res) => {
       });
     }
 
-    event = await Event.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    ).populate('createdBy', 'name email')
-     .populate('attendees', 'name email');
+    // Validate dates using the effective values (existing or incoming)
+    const effectiveStart = req.body.start ? new Date(req.body.start) : new Date(event.start);
+    const effectiveEnd = req.body.end ? new Date(req.body.end) : new Date(event.end);
+
+    if (Number.isNaN(effectiveStart.getTime())) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Validation failed',
+        errors: [{ field: 'start', message: 'Start date must be a valid date' }]
+      });
+    }
+    if (Number.isNaN(effectiveEnd.getTime())) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Validation failed',
+        errors: [{ field: 'end', message: 'End date must be a valid date' }]
+      });
+    }
+    if (effectiveEnd <= effectiveStart) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Validation failed',
+        errors: [{ field: 'end', message: 'End date must be after start date' }]
+      });
+    }
+
+    // Apply updates on the loaded document and save so validators run with proper context
+    const updatableFields = [
+      'title', 'description', 'start', 'end', 'type', 'location',
+      'allDay', 'attendees', 'isPublic', 'status', 'recurring'
+    ];
+    updatableFields.forEach((field) => {
+      if (Object.prototype.hasOwnProperty.call(req.body, field)) {
+        event.set(field, req.body[field]);
+      }
+    });
+
+    await event.save();
+
+    await event.populate('createdBy', 'name email');
+    await event.populate('attendees', 'name email');
+
+    // align variable name for response
+    
 
     res.json({
       success: true,

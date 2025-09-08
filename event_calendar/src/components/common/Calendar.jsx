@@ -18,6 +18,17 @@ const formats = {
     `${loc.format(start, 'MMM DD, YYYY', culture)} — ${loc.format(end, 'MMM DD, YYYY', culture)}`,
 };
 
+// Custom event renderer for truncated titles
+const EventItem = ({ event }) => {
+  const title = event?.title || '';
+  return (
+    <div className="calendar-event-item" title={title}>
+      <span className="calendar-event-dot" />
+      <span className="calendar-event-title">{title}</span>
+    </div>
+  );
+};
+
 const CalendarComponent = ({ 
   events = [], 
   onEventClick, 
@@ -100,6 +111,9 @@ const CalendarComponent = ({
         onEventResize={handleEventResize}
         eventPropGetter={eventStyleGetter}
         formats={formats}
+        components={{
+          event: EventItem,
+        }}
         messages={{
           today: 'Today',
           previous: 'Back',

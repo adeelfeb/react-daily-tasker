@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { eventsAPI } from '../services/api';
 import SimpleCalendar from '../components/common/SimpleCalendar';
+import errorHandler from '../utils/errorHandler';
 import './UserDashboard.css';
 
 const UserDashboard = () => {
@@ -21,18 +22,9 @@ const UserDashboard = () => {
       setEvents(response.data.events || []);
       setError(null);
     } catch (err) {
-      console.log('API not available, using mock data');
-      // Use mock data when API is not available
-      setEvents([
-        {
-          id: 1,
-          title: 'Sample Event',
-          start: new Date(),
-          end: new Date(Date.now() + 3600000),
-          type: 'meeting'
-        }
-      ]);
-      setError(null);
+      const errorMessage = errorHandler.handleApiError(err, 'fetching events');
+      setError(errorMessage);
+      setEvents([]);
     } finally {
       setLoading(false);
     }

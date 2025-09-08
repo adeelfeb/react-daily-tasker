@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { eventsAPI } from '../services/api';
 import Calendar from '../components/common/Calendar';
 import EventForm from '../components/forms/EventForm';
+import errorHandler from '../utils/errorHandler';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -11,7 +12,8 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showEventForm, setShowEventForm] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null); // non-null only when editing
+  const [draftEvent, setDraftEvent] = useState(null); // used for creating with prefilled dates
   const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'list'
 
   useEffect(() => {
@@ -40,18 +42,9 @@ const AdminDashboard = () => {
       setEvents(normalized);
       setError(null);
     } catch (err) {
-      console.log('API not available, using mock data');
-      // Use mock data when API is not available
-      setEvents([
-        {
-          id: 1,
-          title: 'Sample Event',
-          start: new Date(),
-          end: new Date(Date.now() + 3600000),
-          type: 'meeting'
-        }
-      ]);
-      setError(null);
+      const errorMessage = errorHandler.handleApiError(err, 'fetching events');
+      setError(errorMessage);
+      setEvents([]);
     } finally {
       setLoading(false);
     }
@@ -63,6 +56,7 @@ const AdminDashboard = () => {
   };
 
   const handleEditEvent = (event) => {
+    setDraftEvent(null);
     setSelectedEvent(event);
     setShowEventForm(true);
   };
@@ -72,10 +66,9 @@ const AdminDashboard = () => {
       try {
         await eventsAPI.deleteEvent(eventId);
         await fetchEvents();
+        errorHandler.success('Event deleted successfully');
       } catch (err) {
-        console.log('API not available, removing from local state');
-        // Remove from local state when API is not available
-        setEvents(prev => prev.filter(event => event.id !== eventId));
+        errorHandler.handleApiError(err, 'deleting event');
       }
     }
   };
@@ -83,6 +76,7 @@ const AdminDashboard = () => {
   const handleEventFormClose = () => {
     setShowEventForm(false);
     setSelectedEvent(null);
+    setDraftEvent(null);
   };
 
   const handleEventFormSubmit = async (eventData) => {
@@ -105,8 +99,10 @@ const AdminDashboard = () => {
             isPublic: updated.isPublic,
             status: updated.status,
           } : ev)));
+          errorHandler.success('Event updated successfully');
         } else {
           await fetchEvents();
+          errorHandler.success('Event updated successfully');
         }
       } else {
         const res = await eventsAPI.createEvent(eventData);
@@ -127,23 +123,16 @@ const AdminDashboard = () => {
             status: created.status,
           };
           setEvents((prev) => [...prev, normalized]);
+          errorHandler.success('Event created successfully');
         } else {
           await fetchEvents();
+          errorHandler.success('Event created successfully');
         }
       }
-      setShowEventForm(false);
-      setSelectedEvent(null);
     } catch (err) {
-      console.log('API not available, adding to local state');
-      // Add to local state when API is not available
-      const newEvent = {
-        id: Date.now(),
-        ...eventData,
-        createdBy: user?.id
-      };
-      setEvents(prev => [...prev, newEvent]);
-      setShowEventForm(false);
-      setSelectedEvent(null);
+      // Surface error globally and let form handle field-level messages by rethrowing
+      errorHandler.handleApiError(err, selectedEvent ? 'updating event' : 'creating event');
+      throw err;
     }
   };
 
@@ -220,7 +209,12 @@ const AdminDashboard = () => {
                 events={events}
                 onEventClick={handleEditEvent}
                 onDateClick={(date) => {
-                  setSelectedEvent({ start: date, end: date });
+                  // Prefill a 1-hour slot for new event creation
+                  const start = new Date(date);
+                  const end = new Date(date);
+                  end.setHours(end.getHours() + 1);
+                  setSelectedEvent(null);
+                  setDraftEvent({ start, end });
                   setShowEventForm(true);
                 }}
               />
@@ -263,12 +257,13 @@ const AdminDashboard = () => {
         </div>
       </main>
 
-      {/* Event Form Modal */}
+      {/* Event Form Modal (centered overlay) */}
       {showEventForm && (
         <div className="modal-overlay">
           <div className="modal-content">
             <EventForm
               event={selectedEvent}
+              initialDates={draftEvent}
               onSubmit={handleEventFormSubmit}
               onClose={handleEventFormClose}
             />

@@ -12,6 +12,7 @@ import Layout from './components/layout/Layout';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import ContactPage from './pages/ContactPage';
+import NotificationContainer from './components/common/NotificationContainer';
 import './App.css';
 
 // Protected Route Component
@@ -43,6 +44,7 @@ function App() {
     <Router>
       <AuthProvider>
         <div className="App">
+          <NotificationContainer />
           <Routes>
             {/* Root route - checks session and redirects */}
             <Route path="/" element={<RootRedirect />} />

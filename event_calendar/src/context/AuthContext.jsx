@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
 import { authAPI } from '../services/api';
 import { STORAGE_KEYS, USER_ROLES } from '../constants';
+import errorHandler from '../utils/errorHandler';
 
 const AuthContext = createContext();
 

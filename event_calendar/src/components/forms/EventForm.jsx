@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { EVENT_TYPES } from '../../constants';
 import './EventForm.css';
 
-const EventForm = ({ event, onSubmit, onClose }) => {
+const EventForm = ({ event, initialDates, onSubmit, onClose }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -17,6 +17,7 @@ const EventForm = ({ event, onSubmit, onClose }) => {
 
   useEffect(() => {
     if (event) {
+      // Editing existing event
       setFormData({
         title: event.title || '',
         description: event.description || '',
@@ -26,8 +27,15 @@ const EventForm = ({ event, onSubmit, onClose }) => {
         location: event.location || '',
         allDay: event.allDay || false,
       });
+    } else if (initialDates) {
+      // Creating a new event with prefilled dates
+      setFormData(prev => ({
+        ...prev,
+        start: initialDates.start ? new Date(initialDates.start).toISOString().slice(0, 16) : prev.start,
+        end: initialDates.end ? new Date(initialDates.end).toISOString().slice(0, 16) : prev.end,
+      }));
     }
-  }, [event]);
+  }, [event, initialDates]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -68,16 +76,47 @@ const EventForm = ({ event, onSubmit, onClose }) => {
     setErrors({});
 
     try {
+      // Ensure end is after start client-side to avoid server validation error
+      const clientStart = new Date(formData.start);
+      const clientEnd = new Date(formData.end);
+      if (Number.isNaN(clientStart.getTime())) {
+        setErrors({ start: 'Start date must be a valid date' });
+        return;
+      }
+      if (Number.isNaN(clientEnd.getTime())) {
+        setErrors({ end: 'End date must be a valid date' });
+        return;
+      }
+      if (clientEnd <= clientStart) {
+        setErrors({ end: 'End date must be after start date' });
+        return;
+      }
+
       const eventData = {
         ...formData,
-        start: new Date(formData.start),
-        end: new Date(formData.end),
+        start: clientStart,
+        end: clientEnd,
       };
 
       await onSubmit(eventData);
       onClose();
     } catch (error) {
-      setErrors({ submit: 'An unexpected error occurred' });
+      // Map server validation errors to specific fields when available
+      const serverErrors = error?.response?.data?.errors;
+      if (Array.isArray(serverErrors) && serverErrors.length > 0) {
+        const fieldErrors = {};
+        serverErrors.forEach((e) => {
+          if (e.field && e.message) {
+            fieldErrors[e.field] = e.message;
+          }
+        });
+        if (Object.keys(fieldErrors).length > 0) {
+          setErrors(fieldErrors);
+          return;
+        }
+      }
+      const msg = error?.response?.data?.message || 'An unexpected error occurred';
+      setErrors({ submit: msg });
     } finally {
       setIsSubmitting(false);
     }

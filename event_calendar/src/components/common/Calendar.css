@@ -6,6 +6,31 @@
   margin: 0.75rem 0;
 }
 
+/* Truncated event item inside month/day cells */
+.calendar-event-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.calendar-event-item .calendar-event-dot {
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.calendar-event-item .calendar-event-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .calendar-loading {
   display: flex;
   flex-direction: column;

@@ -154,13 +154,17 @@
 }
 
 .modal-content {
-  background-color: white;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
-  padding: 2rem;
-  max-width: 500px;
-  width: 90%;
+  padding: 0; /* inner component handles its padding */
+  max-width: 720px;
+  width: 95vw;
   max-height: 90vh;
-  overflow-y: auto;
+  overflow: visible; /* avoid double scrollbars */
+  box-sizing: border-box;
+  display: flex;
+  align-items: stretch;
 }
 
 /* Button Styles */
