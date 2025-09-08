@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { eventsAPI } from '../services/api';
 import SimpleMonthCalendar from '../components/common/SimpleMonthCalendar';
 import './CalendarPage.css';

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import { createContext, useContext, useReducer, useEffect } from 'react';
 import { authAPI } from '../services/api';
 import { STORAGE_KEYS, USER_ROLES } from '../constants';
 
@@ -89,6 +89,9 @@ export const AuthProvider = ({ children }) => {
       const payload = response?.data?.data || response?.data || {};
       const { user, token } = payload;
       
+      console.log('API response payload:', payload);
+      console.log('API login successful - User role:', user.role);
+      
       localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
       localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(user));
       
@@ -101,11 +104,16 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.log('API not available, using mock authentication');
       // Mock authentication when API is not available
+      // Check for specific admin emails or use a more reliable method
+      const isAdminEmail = credentials.email === 'admin@demo.com' || 
+                          credentials.email === 'admin@example.com' ||
+                          credentials.email.includes('admin@');
+      
       const mockUser = {
         id: 1,
         name: credentials.email.split('@')[0],
         email: credentials.email,
-        role: credentials.email.includes('admin') ? 'admin' : 'user'
+        role: isAdminEmail ? 'admin' : 'user'
       };
       const mockToken = 'mock-token-' + Date.now();
       
@@ -117,6 +125,7 @@ export const AuthProvider = ({ children }) => {
         payload: { user: mockUser, token: mockToken },
       });
       
+      console.log('Mock login successful - User role:', mockUser.role);
       return { success: true, user: mockUser };
     }
   };

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { isValidEmail, isValidPassword } from '../../utils/validation';
+import { STORAGE_KEYS } from '../../constants';
 import './LoginForm.css';
 
 const LoginForm = () => {
@@ -64,8 +65,11 @@ const LoginForm = () => {
     
     if (result.success) {
       // Get the user data from the result to check role immediately
-      const userData = result.user || JSON.parse(localStorage.getItem('user_data') || '{}');
+      const userData = result.user || JSON.parse(localStorage.getItem(STORAGE_KEYS.USER_DATA) || '{}');
+      console.log('LoginForm - User data:', userData);
+      console.log('LoginForm - User role:', userData.role);
       const redirectPath = userData.role === 'admin' ? '/admin' : '/dashboard';
+      console.log('LoginForm - Redirecting to:', redirectPath);
       navigate(redirectPath);
     } else {
       setErrors({ submit: result.error });

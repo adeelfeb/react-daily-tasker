@@ -1,4 +1,3 @@
-import React from 'react';
 
 const CalendarToolbar = (toolbar) => {
   const goToBack = () => toolbar.onNavigate('PREV');

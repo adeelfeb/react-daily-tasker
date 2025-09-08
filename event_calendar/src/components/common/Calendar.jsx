@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import { useState, useCallback } from 'react';
+import { Calendar as RBCalendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import { CALENDAR_VIEWS } from '../../constants';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -83,7 +83,7 @@ const CalendarComponent = ({
 
   return (
     <div className="calendar-container">
-      <Calendar
+      <RBCalendar
         localizer={localizer}
         events={events}
         startAccessor="start"

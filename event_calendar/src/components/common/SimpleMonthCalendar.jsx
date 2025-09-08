@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import './SimpleMonthCalendar.css';
 
 const startOfMonth = (date) => new Date(date.getFullYear(), date.getMonth(), 1);

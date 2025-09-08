@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { EVENT_TYPES } from '../../constants';
 import './EventForm.css';
 

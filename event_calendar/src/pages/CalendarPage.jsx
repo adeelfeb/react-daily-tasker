@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useEvents } from '../context/EventsContext';
 import CalendarComponent from '../components/common/Calendar';
