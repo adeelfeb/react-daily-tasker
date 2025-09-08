@@ -1,0 +1,38 @@
+.simple-calendar {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.simple-calendar h3 {
+  color: var(--color-text);
+  margin-bottom: 1rem;
+}
+
+.calendar-placeholder {
+  padding: 2rem;
+  border: 2px dashed var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-surface-2);
+}
+
+.calendar-placeholder p {
+  margin: 0.5rem 0;
+  color: var(--color-text-muted);
+}
+
+.calendar-placeholder button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-accent);
+  color: #0b0e14;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.calendar-placeholder button:hover {
+  background-color: #5a96fc;
+}
