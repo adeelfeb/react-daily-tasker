@@ -1,0 +1,11 @@
+.site-footer { border-top: 1px solid var(--color-border); background: var(--color-surface); }
+.footer-inner { display: flex; flex-direction: column; gap: 0.75rem; padding: 1.25rem 0; }
+.footer-nav { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; padding-top: 0.5rem; }
+.footer-nav a { color: var(--color-text-muted); text-decoration: none; font-size: 0.95rem; }
+.footer-nav a:hover { color: var(--color-accent); }
+.footer-divider { height: 1px; background: var(--color-border); width: 100%; opacity: 0.8; }
+.footer-privacy { color: var(--color-text-muted); font-size: 0.9rem; text-align: center; }
+.footer-privacy a { color: var(--color-accent); text-decoration: none; }
+.footer-privacy a:hover { text-decoration: underline; }
+.footer-copy { color: var(--color-text-muted); font-size: 0.9rem; text-align: center; }
+

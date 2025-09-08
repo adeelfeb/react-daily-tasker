@@ -8,6 +8,10 @@ import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import RootRedirect from './components/RootRedirect';
 import EventsPage from './pages/EventsPage';
+import Layout from './components/layout/Layout';
+import PrivacyPage from './pages/PrivacyPage';
+import TermsPage from './pages/TermsPage';
+import ContactPage from './pages/ContactPage';
 import './App.css';
 
 // Protected Route Component
@@ -37,69 +41,54 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
 function App() {
   return (
     <Router>
-      <div className="App">
-        <Routes>
-          {/* Root route - checks session and redirects */}
-          <Route 
-            path="/" 
-            element={
-              <AuthProvider>
-                <RootRedirect />
-              </AuthProvider>
-            } 
-          />
-          
-          {/* Home page - public landing page */}
-          <Route path="/home" element={<Home />} />
+      <AuthProvider>
+        <div className="App">
+          <Routes>
+            {/* Root route - checks session and redirects */}
+            <Route path="/" element={<RootRedirect />} />
 
-          {/* Public Events page - no auth required */}
-          <Route path="/events" element={<EventsPage />} />
-          
-          {/* Auth routes - need AuthProvider but no EventsProvider */}
-          <Route 
-            path="/login" 
-            element={
-              <AuthProvider>
-                <LoginPage />
-              </AuthProvider>
-            } 
-          />
-          <Route 
-            path="/register" 
-            element={
-              <AuthProvider>
-                <RegisterPage />
-              </AuthProvider>
-            } 
-          />
-          
-          {/* Protected routes - need authentication */}
-          <Route 
-            path="/dashboard" 
-            element={
-              <AuthProvider>
-                <EventsProvider>
-                  <ProtectedRoute>
-                    <UserDashboard />
-                  </ProtectedRoute>
-                </EventsProvider>
-              </AuthProvider>
-            } 
-          />
-          <Route 
-            path="/admin" 
-            element={
-              <AuthProvider>
-                <EventsProvider>
-                  <ProtectedRoute requireAdmin={true}>
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                </EventsProvider>
-              </AuthProvider>
-            } 
-          />
-        </Routes>
-      </div>
+            {/* Home page - public landing page */}
+            <Route path="/home" element={<Layout><Home /></Layout>} />
+
+            {/* Public Events page - no auth required */}
+            <Route path="/events" element={<Layout><EventsPage /></Layout>} />
+
+            {/* Legal & Contact */}
+            <Route path="/privacy" element={<Layout><PrivacyPage /></Layout>} />
+            <Route path="/terms" element={<Layout><TermsPage /></Layout>} />
+            <Route path="/contact" element={<Layout><ContactPage /></Layout>} />
+
+            {/* Auth routes */}
+            <Route path="/login" element={<LoginPage />} />
+
+            {/* Protected routes - need authentication */}
+            <Route 
+              path="/dashboard" 
+              element={
+                <Layout>
+                  <EventsProvider>
+                    <ProtectedRoute>
+                      <UserDashboard />
+                    </ProtectedRoute>
+                  </EventsProvider>
+                </Layout>
+              } 
+            />
+            <Route 
+              path="/admin" 
+              element={
+                <Layout>
+                  <EventsProvider>
+                    <ProtectedRoute requireAdmin={true}>
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  </EventsProvider>
+                </Layout>
+              } 
+            />
+          </Routes>
+        </div>
+      </AuthProvider>
     </Router>
   );
 }

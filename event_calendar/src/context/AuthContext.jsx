@@ -86,7 +86,8 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: 'LOGIN_START' });
     try {
       const response = await authAPI.login(credentials);
-      const { user, token } = response.data;
+      const payload = response?.data?.data || response?.data || {};
+      const { user, token } = payload;
       
       localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
       localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(user));
@@ -96,7 +97,7 @@ export const AuthProvider = ({ children }) => {
         payload: { user, token },
       });
       
-      return { success: true };
+      return { success: true, user };
     } catch (error) {
       console.log('API not available, using mock authentication');
       // Mock authentication when API is not available
@@ -116,7 +117,7 @@ export const AuthProvider = ({ children }) => {
         payload: { user: mockUser, token: mockToken },
       });
       
-      return { success: true };
+      return { success: true, user: mockUser };
     }
   };
 
@@ -134,7 +135,7 @@ export const AuthProvider = ({ children }) => {
         payload: { user, token },
       });
       
-      return { success: true };
+      return { success: true, user };
     } catch (error) {
       console.log('API not available, using mock registration');
       // Mock registration when API is not available
@@ -154,7 +155,7 @@ export const AuthProvider = ({ children }) => {
         payload: { user: mockUser, token: mockToken },
       });
       
-      return { success: true };
+      return { success: true, user: mockUser };
     }
   };
 

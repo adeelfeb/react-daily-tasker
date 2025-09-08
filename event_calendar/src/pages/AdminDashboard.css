@@ -1,14 +1,13 @@
 /* Admin Dashboard Styles */
 .admin-dashboard {
   min-height: 100vh;
-  background-color: var(--color-white);
+  background-color: var(--color-bg);
 }
 
 .dashboard-header {
-  background-color: white;
-  border-bottom: 1px solid var(--color-lavender);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding: 1rem 0;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.75rem 0;
 }
 
 .header-content {
@@ -20,41 +19,38 @@
 }
 
 .dashboard-title h1 {
-  color: var(--color-lavender);
-  margin: 0 0 0.5rem 0;
-  font-size: 2rem;
+  color: var(--color-text);
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 
 .dashboard-title p {
-  color: var(--color-black);
+  color: var(--color-text-muted);
   margin: 0;
-  opacity: 0.8;
 }
 
 .header-actions {
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  flex-wrap: wrap;
 }
 
-.dashboard-main {
-  padding: 2rem 0;
-}
+.dashboard-main { padding: 1rem 0; }
 
 .calendar-container {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  padding: 2rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem;
   margin-top: 1rem;
 }
 
 .events-list {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  padding: 2rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem;
   margin-top: 1rem;
 }
 
@@ -70,15 +66,18 @@
 }
 
 .event-card {
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1rem;
-  background-color: #fafafa;
-  transition: box-shadow 0.3s ease;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  background-color: var(--color-surface-2);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .event-card:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+  border-color: var(--color-accent);
 }
 
 .event-header {
@@ -88,23 +87,14 @@
   margin-bottom: 0.5rem;
 }
 
-.event-header h3 {
-  color: var(--color-black);
-  margin: 0;
-  font-size: 1.1rem;
-}
+.event-header h3 { color: var(--color-text); margin: 0; font-size: 1.05rem; }
 
 .event-actions {
   display: flex;
   gap: 0.5rem;
 }
 
-.event-description {
-  color: var(--color-black);
-  opacity: 0.8;
-  margin: 0.5rem 0;
-  font-size: 0.9rem;
-}
+.event-description { color: var(--color-text-muted); margin: 0.5rem 0; font-size: 0.9rem; }
 
 .event-details {
   display: flex;
@@ -114,19 +104,9 @@
   font-size: 0.8rem;
 }
 
-.event-date {
-  color: var(--color-coral-orange);
-  font-weight: 500;
-}
+.event-date { color: var(--color-accent); font-weight: 500; }
 
-.event-type {
-  background-color: var(--color-lavender);
-  color: white;
-  padding: 0.2rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-}
+.event-type { background-color: var(--color-accent); color: #0b0e14; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; text-transform: uppercase; }
 
 .error-message {
   background-color: #fee;
@@ -142,14 +122,7 @@
   margin: 0 0 1rem 0;
 }
 
-.dashboard-loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 100vh;
-  background-color: var(--color-white);
-}
+.dashboard-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; background-color: var(--color-bg); }
 
 .loading-spinner {
   width: 40px;
@@ -195,6 +168,11 @@
   padding: 0.5rem 1rem;
   font-size: 0.8rem;
 }
+
+/* Toolbar below header */
+.dashboard-toolbar { border-bottom: 1px solid var(--color-border); background: var(--color-surface); }
+.toolbar-row { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; }
+.toolbar-left { display: flex; gap: 0.5rem; align-items: center; }
 
 .btn-danger {
   background-color: #dc3545;

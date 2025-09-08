@@ -168,31 +168,39 @@ const AdminDashboard = () => {
           <div className="header-content">
             <div className="dashboard-title">
               <h1>Admin Dashboard</h1>
-              <p>Welcome back, {user?.name || 'Admin'}!</p>
+              <p>{user?.name ? user.name : 'Admin'}</p>
             </div>
             <div className="header-actions">
-              <button 
-                className={`btn ${viewMode === 'calendar' ? 'btn-primary' : 'btn-outline'}`}
-                onClick={() => setViewMode('calendar')}
-              >
-                Calendar View
-              </button>
-              <button 
-                className={`btn ${viewMode === 'list' ? 'btn-primary' : 'btn-outline'}`}
-                onClick={() => setViewMode('list')}
-              >
-                List View
-              </button>
-              <button className="btn btn-primary" onClick={handleCreateEvent}>
-                Create Event
-              </button>
-              <button className="btn btn-outline" onClick={handleLogout}>
-                Logout
-              </button>
+              <button className="btn btn-outline" onClick={handleLogout}>Logout</button>
             </div>
           </div>
         </div>
       </header>
+
+      {/* Compact toolbar below header */}
+      <div className="dashboard-toolbar">
+        <div className="container">
+          <div className="toolbar-row">
+            <div className="toolbar-left">
+              <button 
+                className={`btn btn-sm ${viewMode === 'calendar' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setViewMode('calendar')}
+              >
+                Calendar
+              </button>
+              <button 
+                className={`btn btn-sm ${viewMode === 'list' ? 'btn-primary' : 'btn-outline'}`}
+                onClick={() => setViewMode('list')}
+              >
+                All Events
+              </button>
+              <button className="btn btn-sm btn-primary" onClick={handleCreateEvent}>
+                Create Event
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Main Content */}
       <main className="dashboard-main">

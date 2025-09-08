@@ -80,12 +80,6 @@ const Home = () => {
               <button className="btn btn-outline" onClick={() => navigate('/events')}>
                 Browse Events
               </button>
-              <button className="btn btn-outline" onClick={() => navigate('/login')}>
-                Add Event
-              </button>
-            </div>
-            <div className="text-center" style={{ marginTop: '0.75rem', opacity: 0.7, fontSize: '0.9rem' }}>
-              <span>Demo admin: admin@demo.com / password123</span>
             </div>
           </div>
         </div>
@@ -147,18 +141,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <div className="footer-content">
-            <nav className="footer-nav">
-              <a href="/">Home</a>
-              <a href="/privacy">Privacy & Terms</a>
-              <a href="/contact">Contact</a>
-            </nav>
-          </div>
-        </div>
-      </footer>
+      {/* Footer removed: using global Layout footer */}
     </div>
   );
 };

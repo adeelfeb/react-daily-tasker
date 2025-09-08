@@ -63,8 +63,9 @@ const LoginForm = () => {
     const result = await login(formData);
     
     if (result.success) {
-      // Redirect based on user role
-      const redirectPath = isAdmin() ? '/admin' : '/dashboard';
+      // Get the user data from the result to check role immediately
+      const userData = result.user || JSON.parse(localStorage.getItem('user_data') || '{}');
+      const redirectPath = userData.role === 'admin' ? '/admin' : '/dashboard';
       navigate(redirectPath);
     } else {
       setErrors({ submit: result.error });

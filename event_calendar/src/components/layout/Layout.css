@@ -6,7 +6,7 @@
 
 .main-content {
   flex: 1;
-  padding: 2rem 0;
+  padding: 0;
 }
 
 .container {
@@ -16,9 +16,7 @@
 }
 
 @media (max-width: 768px) {
-  .main-content {
-    padding: 1rem 0;
-  }
+  .main-content { padding: 0; }
   
   .container {
     padding: 0 0.5rem;
