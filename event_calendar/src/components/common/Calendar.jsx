@@ -20,23 +20,22 @@ const formats = {
     `${loc.format(start, 'MMM DD, YYYY', culture)} — ${loc.format(end, 'MMM DD, YYYY', culture)}`,
 };
 
-// Custom event renderer for different views
-const EventItem = ({ event, view, onCreateOverlapping }) => {
+// Month view: render full block with tooltip
+const MonthEventItem = ({ event }) => {
   const title = event?.title || '';
-  
-  // For month view, show compact version with tooltip
-  if (view === 'month') {
-    return (
-      <EventTooltip event={event} position="top">
-        <div className="calendar-event-item month-event">
-          <span className="calendar-event-dot" />
-          <span className="calendar-event-title">{title}</span>
-        </div>
-      </EventTooltip>
-    );
-  }
-  
-  // For week/day view, show full event with tooltip
+  return (
+    <EventTooltip event={event} position="top">
+      <div className="calendar-event-item month-event">
+        <span className="calendar-event-dot" />
+        <span className="calendar-event-title">{title}</span>
+      </div>
+    </EventTooltip>
+  );
+};
+
+// Week/Day view: detailed hover + optional overlapping action
+const WeekDayEventItem = ({ event, onCreateOverlapping }) => {
+  const title = event?.title || '';
   return (
     <EventTooltip 
       event={event} 
@@ -146,13 +145,15 @@ const CalendarComponent = ({
         eventPropGetter={eventStyleGetter}
         formats={formats}
         components={{
-          event: (props) => (
-            <EventItem 
-              {...props} 
-              view={view}
-              onCreateOverlapping={onCreateOverlapping}
-            />
-          ),
+          month: {
+            event: (props) => <MonthEventItem {...props} />,
+          },
+          week: {
+            event: (props) => <WeekDayEventItem {...props} onCreateOverlapping={onCreateOverlapping} />,
+          },
+          day: {
+            event: (props) => <WeekDayEventItem {...props} onCreateOverlapping={onCreateOverlapping} />,
+          },
         }}
         messages={{
           today: 'Today',

@@ -49,7 +49,7 @@ const EventsPage = () => {
       ) : error ? (
         <div className="error-message">{error}</div>
       ) : (
-        <SimpleMonthCalendar events={events} />
+        <SimpleMonthCalendar events={events} onEventClick={() => {}} />
       )}
     </div>
   );

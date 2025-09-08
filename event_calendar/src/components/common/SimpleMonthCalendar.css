@@ -14,7 +14,23 @@
 .smc-event { background: var(--color-accent); color: #0b0e14; font-size: 0.78rem; border-radius: 6px; padding: 2px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
 .smc-event.smc-task { background: #f97316; color: #0b0e14; }
 .smc-event.smc-reminder { background: #22c55e; color: #0b0e14; }
-.smc-more { color: var(--color-text-muted); font-size: 0.78rem; }
+.smc-more { 
+  color: var(--color-text-muted); 
+  font-size: 0.78rem; 
+  cursor: pointer; 
+  padding: 2px 6px; 
+  border-radius: 4px; 
+  transition: all 0.2s ease;
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+}
+
+.smc-more:hover { 
+  color: var(--color-text); 
+  background: var(--color-accent); 
+  color: #0b0e14;
+  border-color: var(--color-accent);
+}
 
 @media (max-width: 768px) {
   .smc-cell { min-height: 90px; }

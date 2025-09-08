@@ -29,6 +29,7 @@
   min-height: 0;
   font-size: 11px;
   font-weight: 600;
+  color: inherit;
 }
 
 .calendar-event-item.month-event:hover {
@@ -157,6 +158,13 @@
   box-sizing: border-box;
   z-index: 1;
   border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 /* Bottom accent line for month events that thickens on hover */
@@ -165,6 +173,32 @@
 }
 /* Remove underline accent for month blocks to match week styling */
 .rbc-month-view .rbc-event::after { display: none; }
+
+/* Month view event colors matching SimpleMonthCalendar */
+.rbc-month-view .rbc-event {
+  background: var(--color-accent) !important;
+  color: #0b0e14 !important;
+}
+
+.rbc-month-view .rbc-event[style*="background-color: rgb(40, 167, 69)"] {
+  background: #22c55e !important; /* meeting - green */
+  color: #0b0e14 !important;
+}
+
+.rbc-month-view .rbc-event[style*="background-color: rgb(255, 193, 7)"] {
+  background: #f97316 !important; /* task - orange */
+  color: #0b0e14 !important;
+}
+
+.rbc-month-view .rbc-event[style*="background-color: rgb(220, 53, 69)"] {
+  background: #dc3545 !important; /* reminder - red */
+  color: #ffffff !important;
+}
+
+.rbc-month-view .rbc-event[style*="background-color: rgb(49, 116, 173)"] {
+  background: var(--color-accent) !important; /* other - default accent */
+  color: #0b0e14 !important;
+}
 
 .rbc-date-cell {
   padding: 0.5rem;

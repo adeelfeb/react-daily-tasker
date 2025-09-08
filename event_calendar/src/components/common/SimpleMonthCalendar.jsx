@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import EventViewModal from '../forms/EventViewModal';
+import DayEventsModal from '../forms/DayEventsModal';
 import './SimpleMonthCalendar.css';
 
 const startOfMonth = (date) => new Date(date.getFullYear(), date.getMonth(), 1);
@@ -31,6 +33,9 @@ const SimpleMonthCalendar = ({
   initialDate = new Date(),
 }) => {
   const [current, setCurrent] = useState(initialDate);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedDayEvents, setSelectedDayEvents] = useState(null);
+  const [selectedDay, setSelectedDay] = useState(null);
 
   const monthStart = startOfMonth(current);
   const monthEnd = endOfMonth(current);
@@ -51,6 +56,32 @@ const SimpleMonthCalendar = ({
   const goPrev = () => setCurrent(new Date(current.getFullYear(), current.getMonth() - 1, 1));
   const goNext = () => setCurrent(new Date(current.getFullYear(), current.getMonth() + 1, 1));
   const goToday = () => setCurrent(new Date());
+
+  const handleEventClick = (event) => {
+    setSelectedEvent(event);
+    if (onEventClick) {
+      onEventClick(event);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setSelectedEvent(null);
+  };
+
+  const handleMoreEventsClick = (day, dayEvents) => {
+    setSelectedDay(day);
+    setSelectedDayEvents(dayEvents);
+  };
+
+  const handleCloseDayModal = () => {
+    setSelectedDay(null);
+    setSelectedDayEvents(null);
+  };
+
+  const handleDayEventClick = (event) => {
+    setSelectedEvent(event);
+    handleCloseDayModal();
+  };
 
   return (
     <div className="smc">
@@ -81,18 +112,43 @@ const SimpleMonthCalendar = ({
               <div className="smc-date">{day.getDate()}</div>
               <div className="smc-events">
                 {dayEvents.slice(0, 3).map((ev) => (
-                  <div key={(ev.id || ev._id) + ''} className={`smc-event smc-${ev.type || 'event'}`} title={ev.title} onClick={(e) => { e.stopPropagation(); onEventClick && onEventClick(ev); }}>
+                  <div key={(ev.id || ev._id) + ''} className={`smc-event smc-${ev.type || 'event'}`} title={ev.title} onClick={(e) => { e.stopPropagation(); handleEventClick(ev); }}>
                     {ev.title}
                   </div>
                 ))}
                 {dayEvents.length > 3 && (
-                  <div className="smc-more">+{dayEvents.length - 3} more</div>
+                  <div 
+                    className="smc-more" 
+                    onClick={(e) => { 
+                      e.stopPropagation(); 
+                      handleMoreEventsClick(day, dayEvents); 
+                    }}
+                    title={`View all ${dayEvents.length} events`}
+                  >
+                    +{dayEvents.length - 3} more
+                  </div>
                 )}
               </div>
             </div>
           );
         })}
       </div>
+      
+      {selectedEvent && (
+        <EventViewModal
+          event={selectedEvent}
+          onClose={handleCloseModal}
+        />
+      )}
+      
+      {selectedDayEvents && selectedDay && (
+        <DayEventsModal
+          date={selectedDay}
+          events={selectedDayEvents}
+          onClose={handleCloseDayModal}
+          onEventClick={handleDayEventClick}
+        />
+      )}
     </div>
   );
 };

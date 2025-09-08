@@ -135,7 +135,7 @@ const Home = () => {
             <div className="error-message">{error}</div>
           ) : (
             <div className="calendar-container">
-              <SimpleMonthCalendar events={events} />
+              <SimpleMonthCalendar events={events} onEventClick={() => {}} />
             </div>
           )}
         </div>
