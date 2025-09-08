@@ -57,6 +57,9 @@ const Home = () => {
               <button className="btn btn-outline" onClick={() => navigate('/events')}>
                 View Events
               </button>
+              <button className="btn btn-primary" onClick={() => navigate('/login')}>
+                Add Event
+              </button>
             </nav>
           </div>
         </div>
@@ -77,12 +80,18 @@ const Home = () => {
               <button className="btn btn-outline" onClick={() => navigate('/events')}>
                 Browse Events
               </button>
+              <button className="btn btn-outline" onClick={() => navigate('/login')}>
+                Add Event
+              </button>
+            </div>
+            <div className="text-center" style={{ marginTop: '0.75rem', opacity: 0.7, fontSize: '0.9rem' }}>
+              <span>Demo admin: admin@demo.com / password123</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Info Section (placed after calendar) */}
       <section className="features">
         <div className="container">
           <div className="features-grid">
@@ -90,8 +99,8 @@ const Home = () => {
               <div className="feature-icon">
                 <FiCalendar size={28} />
               </div>
-              <h3>Admin publishing</h3>
-              <p>Admins create and manage events in a streamlined dashboard.
+              <h3>Browse events</h3>
+              <p>Navigate the calendar to see what’s coming up this month.
               </p>
             </div>
             
@@ -99,8 +108,8 @@ const Home = () => {
               <div className="feature-icon">
                 <FiCheckCircle size={28} />
               </div>
-              <h3>Public calendar</h3>
-              <p>Everyone can view upcoming events without logging in.
+              <h3>Check details</h3>
+              <p>Open any event to view its title, time, and notes.
               </p>
             </div>
             
@@ -108,8 +117,8 @@ const Home = () => {
               <div className="feature-icon">
                 <FiBell size={28} />
               </div>
-              <h3>Clean & minimal</h3>
-              <p>A sleek dark UI focused on clarity and readability.
+              <h3>Stay updated</h3>
+              <p>Come back anytime to see newly added or updated events.
               </p>
             </div>
           </div>

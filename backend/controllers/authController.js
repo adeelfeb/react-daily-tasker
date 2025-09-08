@@ -372,3 +372,53 @@ export const logout = async (req, res) => {
     });
   }
 };
+
+// @desc    One-time admin setup or promote existing user to admin
+// @route   POST /api/auth/setup-admin
+// @access  Protected via ADMIN_SETUP_TOKEN env
+export const setupAdmin = async (req, res) => {
+  try {
+    const { token, name, email, password } = req.body;
+
+    if (!process.env.ADMIN_SETUP_TOKEN) {
+      return res.status(500).json({ success: false, message: 'ADMIN_SETUP_TOKEN is not configured' });
+    }
+
+    if (!token || token !== process.env.ADMIN_SETUP_TOKEN) {
+      return res.status(403).json({ success: false, message: 'Invalid setup token' });
+    }
+
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: 'Email and password are required' });
+    }
+
+    let user = await User.findOne({ email }).select('+password');
+
+    if (user) {
+      // Promote existing user
+      user.role = 'admin';
+      if (password) user.password = password;
+      if (name) user.name = name;
+      await user.save();
+    } else {
+      // Create new admin user
+      user = await User.create({ name: name || 'Admin', email, password, role: 'admin' });
+    }
+
+    return res.status(201).json({
+      success: true,
+      message: 'Admin user is ready',
+      data: {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Setup admin error:', error);
+    res.status(500).json({ success: false, message: 'Server error during admin setup' });
+  }
+};

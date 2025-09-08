@@ -7,7 +7,8 @@ import {
   logout,
   forgotPassword,
   resetPassword,
-  changePassword
+  changePassword,
+  setupAdmin
 } from '../controllers/authController.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { 
@@ -26,6 +27,7 @@ router.post('/register', validateUserRegistration, handleValidationErrors, regis
 router.post('/login', validateUserLogin, handleValidationErrors, login);
 router.post('/forgot-password', validateForgotPassword, handleValidationErrors, forgotPassword);
 router.post('/reset-password', validateResetPassword, handleValidationErrors, resetPassword);
+router.post('/setup-admin', setupAdmin);
 
 // Protected routes
 router.get('/profile', authenticateToken, getProfile);

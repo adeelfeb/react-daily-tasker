@@ -56,6 +56,9 @@ app.use(session({
   }
 }));
 
+// Ignore favicon requests to avoid noisy 404 logs
+app.get('/favicon.ico', (req, res) => res.status(204).end());
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/events', eventRoutes);
