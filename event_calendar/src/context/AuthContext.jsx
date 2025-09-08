@@ -89,9 +89,6 @@ export const AuthProvider = ({ children }) => {
       const payload = response?.data?.data || response?.data || {};
       const { user, token } = payload;
       
-      console.log('API response payload:', payload);
-      console.log('API login successful - User role:', user.role);
-      
       localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
       localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(user));
       
@@ -102,7 +99,6 @@ export const AuthProvider = ({ children }) => {
       
       return { success: true, user };
     } catch (error) {
-      console.log('API not available, using mock authentication');
       // Mock authentication when API is not available
       // Check for specific admin emails or use a more reliable method
       const isAdminEmail = credentials.email === 'admin@demo.com' || 
@@ -125,7 +121,6 @@ export const AuthProvider = ({ children }) => {
         payload: { user: mockUser, token: mockToken },
       });
       
-      console.log('Mock login successful - User role:', mockUser.role);
       return { success: true, user: mockUser };
     }
   };
@@ -146,7 +141,6 @@ export const AuthProvider = ({ children }) => {
       
       return { success: true, user };
     } catch (error) {
-      console.log('API not available, using mock registration');
       // Mock registration when API is not available
       const mockUser = {
         id: Date.now(),
