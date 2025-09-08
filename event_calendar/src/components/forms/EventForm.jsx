@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import errorHandler from '../../utils/errorHandler';
 import { EVENT_TYPES } from '../../constants';
 import './EventForm.css';
 
@@ -98,7 +99,17 @@ const EventForm = ({ event, initialDates, onSubmit, onClose }) => {
         end: clientEnd,
       };
 
-      await onSubmit(eventData);
+      const result = await onSubmit(eventData);
+      const backendMessage = result?.message || (event ? 'Event updated successfully' : 'Event created successfully');
+      errorHandler.success(backendMessage, 4500);
+      // Ensure the notification is enqueued and rendered before closing
+      await new Promise((resolve) => {
+        if (typeof requestAnimationFrame === 'function') {
+          requestAnimationFrame(() => resolve());
+        } else {
+          setTimeout(resolve, 0);
+        }
+      });
       onClose();
     } catch (error) {
       // Map server validation errors to specific fields when available
@@ -116,6 +127,7 @@ const EventForm = ({ event, initialDates, onSubmit, onClose }) => {
         }
       }
       const msg = error?.response?.data?.message || 'An unexpected error occurred';
+      errorHandler.error(msg, 6000);
       setErrors({ submit: msg });
     } finally {
       setIsSubmitting(false);
@@ -140,7 +152,7 @@ const EventForm = ({ event, initialDates, onSubmit, onClose }) => {
     <div className="event-form-container">
       <div className="event-form-header">
         <h2>{event ? 'Edit Event' : 'Create Event'}</h2>
-        <button className="close-btn" onClick={handleClose}>
+        <button className="close-btn" onClick={handleClose} disabled={isSubmitting}>
           ×
         </button>
       </div>
@@ -253,6 +265,7 @@ const EventForm = ({ event, initialDates, onSubmit, onClose }) => {
               type="button"
               onClick={handleClose}
               className="btn btn-secondary"
+              disabled={isSubmitting}
             >
               Cancel
             </button>

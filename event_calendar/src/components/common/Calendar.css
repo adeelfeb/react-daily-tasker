@@ -6,7 +6,7 @@
   margin: 0.75rem 0;
 }
 
-/* Truncated event item inside month/day cells */
+/* Event items for different views */
 .calendar-event-item {
   display: flex;
   align-items: center;
@@ -16,6 +16,29 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Month view events - more compact and clickable */
+.calendar-event-item.month-event {
+  background: transparent; /* let the outer rbc-event provide the block styling */
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-height: 0;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.calendar-event-item.month-event:hover {
+  transform: translateY(-1px);
+}
+
+/* Week/day view events */
+.calendar-event-item.week-event {
+  font-size: 12px;
+  padding: 1px 4px;
 }
 
 .calendar-event-item .calendar-event-dot {
@@ -29,6 +52,7 @@
 .calendar-event-item .calendar-event-title {
   overflow: hidden;
   text-overflow: ellipsis;
+  flex: 1;
 }
 
 .calendar-loading {
@@ -78,7 +102,7 @@
   background-color: rgba(110, 168, 254, 0.18);
 }
 
-.rbc-event { border-radius: 6px; padding: 2px 6px; font-size: 0.8rem; font-weight: 600; background: var(--color-accent); color: #0b0e14; border: 1px solid rgba(255,255,255,0.08); }
+.rbc-event { border-radius: 6px; padding: 2px 6px; font-size: 0.8rem; font-weight: 600; color: #ffffff; border: none; }
 .rbc-row-segment, .rbc-event { transition: transform 160ms ease, box-shadow 160ms ease; }
 .rbc-event:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,0.25); }
 
@@ -126,9 +150,37 @@
 .rbc-date-cell > a, .rbc-button-link { color: var(--color-text); opacity: 0.9; }
 .rbc-off-range .rbc-button-link { opacity: 0.45; }
 
+/* Make month view events thicker and easier to click */
+.rbc-month-view .rbc-event {
+  min-height: 28px;
+  padding: 6px 8px;
+  box-sizing: border-box;
+  z-index: 1;
+  border-radius: 6px;
+}
+
+/* Bottom accent line for month events that thickens on hover */
+.rbc-month-view .rbc-event {
+  position: relative;
+}
+/* Remove underline accent for month blocks to match week styling */
+.rbc-month-view .rbc-event::after { display: none; }
+
 .rbc-date-cell {
   padding: 0.5rem;
   min-height: 100px;
+  position: relative;
+}
+
+/* Ensure events are properly displayed in month cells */
+.rbc-date-cell .rbc-events-container {
+  margin: 2px 0;
+}
+
+.rbc-date-cell .rbc-event {
+  margin: 1px 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .rbc-off-range-bg { background: var(--color-surface); opacity: 0.7; }
@@ -137,6 +189,118 @@
 .rbc-agenda-view table { border-color: var(--color-border); }
 .rbc-agenda-date-cell, .rbc-agenda-time-cell { color: var(--color-text-muted); }
 .rbc-agenda-event-cell { color: var(--color-text); }
+
+/* Improved Agenda styling */
+.rbc-agenda-view {
+  padding: 0.5rem 0.75rem;
+}
+
+.rbc-agenda-view table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--color-surface);
+  table-layout: fixed; /* prevent distortion when content is missing */
+}
+
+.rbc-agenda-view thead th {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.rbc-agenda-view tbody > tr > td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: top;
+  min-height: 44px; /* keep rows consistent even when data is missing */
+  overflow: hidden;
+}
+
+/* Ensure empty cells keep space and don't collapse */
+.rbc-agenda-view tbody > tr > td:empty::before {
+  content: "\00a0"; /* non-breaking space */
+}
+
+.rbc-agenda-view tbody > tr:last-child > td {
+  border-bottom: none;
+}
+
+.rbc-agenda-date-cell {
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.rbc-agenda-time-cell {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.rbc-agenda-event-cell {
+  color: var(--color-text);
+  white-space: normal; /* allow wrapping */
+}
+
+/* Event content styling inside agenda event cell */
+.rbc-agenda-event-cell a,
+.rbc-agenda-event-cell .rbc-event,
+.rbc-agenda-event-cell .calendar-event-item {
+  display: block;
+  width: 100%;
+  background: transparent; /* remove green background */
+  border: none;
+  border-radius: 0;
+  padding: 0; /* let table cell padding handle spacing */
+  color: var(--color-text);
+  text-decoration: none;
+  box-sizing: border-box;
+}
+
+.rbc-agenda-event-cell a:hover {
+  background: transparent;
+}
+
+/* Column sizing to avoid shrink/distort when data missing */
+.rbc-agenda-view tbody tr > td:nth-child(1) { width: 22%; }
+.rbc-agenda-view tbody tr > td:nth-child(2) { width: 18%; }
+.rbc-agenda-view tbody tr > td:nth-child(3) { width: auto; }
+
+/* Force-remove green backgrounds for agenda events */
+.rbc-agenda-view .rbc-event {
+  background: transparent !important;
+  border: none !important;
+  color: var(--color-text);
+  box-shadow: none;
+}
+
+.rbc-agenda-view .rbc-event-content,
+.rbc-agenda-view a {
+  background: transparent !important;
+  border: none !important;
+  color: var(--color-text);
+}
+
+/* Subtle zebra striping for readability */
+.rbc-agenda-view tbody tr:nth-child(odd) td {
+  background: var(--color-surface);
+}
+.rbc-agenda-view tbody tr:nth-child(even) td {
+  background: var(--color-surface-2);
+}
+
+/* Extra spacing between grouped days */
+.rbc-agenda-view .rbc-agenda-date-cell + .rbc-agenda-time-cell {
+  border-left: 1px solid var(--color-border);
+}
 
 .rbc-time-view {
   border: 1px solid var(--color-border);

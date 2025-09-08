@@ -99,10 +99,14 @@ const AdminDashboard = () => {
             isPublic: updated.isPublic,
             status: updated.status,
           } : ev)));
-          errorHandler.success('Event updated successfully');
+          const msg = res?.data?.message || 'Event updated successfully';
+          errorHandler.success(msg);
+          return { message: msg };
         } else {
           await fetchEvents();
-          errorHandler.success('Event updated successfully');
+          const msg = 'Event updated successfully';
+          errorHandler.success(msg);
+          return { message: msg };
         }
       } else {
         const res = await eventsAPI.createEvent(eventData);
@@ -123,10 +127,14 @@ const AdminDashboard = () => {
             status: created.status,
           };
           setEvents((prev) => [...prev, normalized]);
-          errorHandler.success('Event created successfully');
+          const msg = res?.data?.message || 'Event created successfully';
+          errorHandler.success(msg);
+          return { message: msg };
         } else {
           await fetchEvents();
-          errorHandler.success('Event created successfully');
+          const msg = 'Event created successfully';
+          errorHandler.success(msg);
+          return { message: msg };
         }
       }
     } catch (err) {
@@ -208,6 +216,13 @@ const AdminDashboard = () => {
               <Calendar 
                 events={events}
                 onEventClick={handleEditEvent}
+                onCreateOverlapping={(baseEvent) => {
+                  const start = new Date(baseEvent.start);
+                  const end = new Date(baseEvent.end || start.getTime() + 60 * 60 * 1000);
+                  setSelectedEvent(null);
+                  setDraftEvent({ start, end });
+                  setShowEventForm(true);
+                }}
                 onDateClick={(date) => {
                   // Prefill a 1-hour slot for new event creation
                   const start = new Date(date);
@@ -251,6 +266,67 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                 ))}
+              </div>
+              {/* Simple Upcoming table for next 7 days */}
+              <div className="events-list" style={{ marginTop: '1.5rem' }}>
+                <h2>Upcoming (Next 7 days)</h2>
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
+                    <thead>
+                      <tr>
+                        <th style={{ textAlign: 'left', padding: '0.6rem 0.8rem', borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface-2)' }}>Date</th>
+                        <th style={{ textAlign: 'left', padding: '0.6rem 0.8rem', borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface-2)' }}>Time</th>
+                        <th style={{ textAlign: 'left', padding: '0.6rem 0.8rem', borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface-2)' }}>Title</th>
+                        <th style={{ textAlign: 'left', padding: '0.6rem 0.8rem', borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface-2)' }}>Type</th>
+                        <th style={{ textAlign: 'left', padding: '0.6rem 0.8rem', borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface-2)' }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {events
+                        .filter(ev => {
+                          const now = new Date();
+                          const in7 = new Date();
+                          in7.setDate(in7.getDate() + 7);
+                          return new Date(ev.start) >= now && new Date(ev.start) <= in7;
+                        })
+                        .sort((a,b) => new Date(a.start) - new Date(b.start))
+                        .map((ev) => (
+                          <tr key={`up-${ev.id}`}>
+                            <td style={{ padding: '0.6rem 0.8rem', borderBottom: '1px solid var(--color-border)', whiteSpace: 'nowrap' }}>
+                              {new Date(ev.start).toLocaleDateString()}
+                            </td>
+                            <td style={{ padding: '0.6rem 0.8rem', borderBottom: '1px solid var(--color-border)', whiteSpace: 'nowrap' }}>
+                              {new Date(ev.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </td>
+                            <td style={{ padding: '0.6rem 0.8rem', borderBottom: '1px solid var(--color-border)' }}>
+                              {ev.title || '\u00A0'}
+                            </td>
+                            <td style={{ padding: '0.6rem 0.8rem', borderBottom: '1px solid var(--color-border)', textTransform: 'capitalize' }}>
+                              {ev.type || '\u00A0'}
+                            </td>
+                            <td style={{ padding: '0.6rem 0.8rem', borderBottom: '1px solid var(--color-border)' }}>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                                <button className="btn btn-sm btn-outline" onClick={() => handleEditEvent(ev)}>Edit</button>
+                                <button className="btn btn-sm btn-danger" onClick={() => handleDeleteEvent(ev.id)}>Delete</button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      {events.filter(ev => {
+                        const now = new Date();
+                        const in7 = new Date();
+                        in7.setDate(in7.getDate() + 7);
+                        return new Date(ev.start) >= now && new Date(ev.start) <= in7;
+                      }).length === 0 && (
+                        <tr>
+                          <td colSpan={5} style={{ padding: '0.9rem 0.8rem', textAlign: 'center', color: 'var(--color-text-muted)' }}>
+                            No upcoming events.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           )}

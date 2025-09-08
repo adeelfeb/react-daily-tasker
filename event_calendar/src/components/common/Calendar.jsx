@@ -2,8 +2,10 @@ import { useState, useCallback } from 'react';
 import { Calendar as RBCalendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import { CALENDAR_VIEWS } from '../../constants';
+import EventTooltip from './EventTooltip';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import './Calendar.css';
+import './EventTooltip.css';
 
 const localizer = momentLocalizer(moment);
 const formats = {
@@ -18,14 +20,35 @@ const formats = {
     `${loc.format(start, 'MMM DD, YYYY', culture)} — ${loc.format(end, 'MMM DD, YYYY', culture)}`,
 };
 
-// Custom event renderer for truncated titles
-const EventItem = ({ event }) => {
+// Custom event renderer for different views
+const EventItem = ({ event, view, onCreateOverlapping }) => {
   const title = event?.title || '';
+  
+  // For month view, show compact version with tooltip
+  if (view === 'month') {
+    return (
+      <EventTooltip event={event} position="top">
+        <div className="calendar-event-item month-event">
+          <span className="calendar-event-dot" />
+          <span className="calendar-event-title">{title}</span>
+        </div>
+      </EventTooltip>
+    );
+  }
+  
+  // For week/day view, show full event with tooltip
   return (
-    <div className="calendar-event-item" title={title}>
-      <span className="calendar-event-dot" />
-      <span className="calendar-event-title">{title}</span>
-    </div>
+    <EventTooltip 
+      event={event} 
+      position="top"
+      extraActionLabel={typeof onCreateOverlapping === 'function' ? 'Create Overlapping' : undefined}
+      onExtraAction={onCreateOverlapping}
+    >
+      <div className="calendar-event-item week-event">
+        <span className="calendar-event-dot" />
+        <span className="calendar-event-title">{title}</span>
+      </div>
+    </EventTooltip>
   );
 };
 
@@ -34,7 +57,8 @@ const CalendarComponent = ({
   onEventClick, 
   onDateClick, 
   onEventDrop, 
-  onEventResize 
+  onEventResize,
+  onCreateOverlapping
 }) => {
   const [view, setView] = useState(CALENDAR_VIEWS.MONTH);
   const [date, setDate] = useState(new Date());
@@ -92,15 +116,25 @@ const CalendarComponent = ({
     };
   };
 
+  // Normalize events to ensure start/end are Date objects for reliable rendering
+  const normalizedEvents = Array.isArray(events)
+    ? events.map((evt) => ({
+        ...evt,
+        start: evt?.start instanceof Date ? evt.start : new Date(evt.start),
+        end: evt?.end instanceof Date ? evt.end : new Date(evt.end),
+      }))
+    : [];
+
   return (
     <div className="calendar-container">
       <RBCalendar
         localizer={localizer}
-        events={events}
+        events={normalizedEvents}
         startAccessor="start"
         endAccessor="end"
+        tooltipAccessor={() => ''}
         style={{ height: 600 }}
-        views={['month', 'week', 'day', 'agenda']}
+        views={['month', 'week', 'day']}
         view={view}
         onView={setView}
         date={date}
@@ -112,7 +146,13 @@ const CalendarComponent = ({
         eventPropGetter={eventStyleGetter}
         formats={formats}
         components={{
-          event: EventItem,
+          event: (props) => (
+            <EventItem 
+              {...props} 
+              view={view}
+              onCreateOverlapping={onCreateOverlapping}
+            />
+          ),
         }}
         messages={{
           today: 'Today',
@@ -121,7 +161,6 @@ const CalendarComponent = ({
           month: 'Month',
           week: 'Week',
           day: 'Day',
-          agenda: 'Agenda',
           showMore: (total) => `+${total} more`,
         }}
         selectable
