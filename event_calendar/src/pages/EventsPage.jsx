@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { eventsAPI } from '../services/api';
 import SimpleMonthCalendar from '../components/common/SimpleMonthCalendar';
 import './CalendarPage.css';
 
 const EventsPage = () => {
+  const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,21 +38,42 @@ const EventsPage = () => {
   }, []);
 
   return (
-    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
-      <h1 style={{ marginBottom: '1rem' }}>Community Events</h1>
-      <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.25rem' }}>
-        Browse upcoming public events.
-      </p>
-      {loading ? (
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Loading events...</p>
+    <div className="events-page">
+      {/* Header */}
+      <header className="header">
+        <div className="container">
+          <div className="header-content">
+            <div className="logo">
+              <h1 onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+                Event Calendar
+              </h1>
+            </div>
+            <nav className="header-nav">
+              <button className="btn btn-primary" onClick={() => navigate('/login')}>
+                Add Event
+              </button>
+            </nav>
+          </div>
         </div>
-      ) : error ? (
-        <div className="error-message">{error}</div>
-      ) : (
-        <SimpleMonthCalendar events={events} onEventClick={() => {}} />
-      )}
+      </header>
+
+      {/* Main Content */}
+      <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
+        <h1 style={{ marginBottom: '1rem' }}>Community Events</h1>
+        <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.25rem' }}>
+          Browse upcoming public events.
+        </p>
+        {loading ? (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>Loading events...</p>
+          </div>
+        ) : error ? (
+          <div className="error-message">{error}</div>
+        ) : (
+          <SimpleMonthCalendar events={events} onEventClick={() => {}} />
+        )}
+      </div>
     </div>
   );
 };

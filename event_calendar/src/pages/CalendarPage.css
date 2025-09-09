@@ -3,6 +3,54 @@
   background: #f8f9fa;
 }
 
+/* Events Page Styles */
+.events-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 0;
+}
+
+/* Header Styles for Events Page */
+.events-page .header {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  box-shadow: none;
+}
+
+.events-page .header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.events-page .logo h1 {
+  font-size: 1.5rem;
+  margin: 0;
+  color: var(--color-text);
+  transition: color 0.2s ease;
+}
+
+.events-page .logo h1:hover {
+  color: var(--color-accent);
+}
+
+.events-page .header-nav {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.events-page .header-nav .btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  line-height: 1;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -42,7 +90,23 @@
   box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
 }
 
+/* Responsive Design for Events Page */
 @media (max-width: 768px) {
+  .events-page .header-content {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  
+  .events-page .logo h1 {
+    font-size: 1.25rem;
+  }
+  
+  .events-page .header-nav .btn {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.85rem;
+  }
+  
   .page-header {
     flex-direction: column;
     gap: 1rem;
