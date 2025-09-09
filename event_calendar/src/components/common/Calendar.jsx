@@ -124,6 +124,16 @@ const CalendarComponent = ({
       }))
     : [];
 
+  // Dynamic height based on screen size
+  const getCalendarHeight = () => {
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth <= 480) return 500;
+      if (window.innerWidth <= 768) return 650;
+      return 750;
+    }
+    return 750;
+  };
+
   return (
     <div className="calendar-container">
       <RBCalendar
@@ -132,7 +142,7 @@ const CalendarComponent = ({
         startAccessor="start"
         endAccessor="end"
         tooltipAccessor={() => ''}
-        style={{ height: 600 }}
+        style={{ height: getCalendarHeight() }}
         views={['week', 'day']}
         view={view}
         onView={setView}

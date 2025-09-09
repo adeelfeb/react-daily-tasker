@@ -385,23 +385,212 @@
   border-bottom-right-radius: 0;
 }
 
+/* Mobile Responsive Styles */
 @media (max-width: 768px) {
   .calendar-container {
-    padding: 0.5rem;
-    margin: 0.5rem 0;
+    padding: 0.25rem;
+    margin: 0.25rem 0;
+    border-radius: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
   }
   
+  .calendar-container::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  .calendar-container::-webkit-scrollbar-track {
+    background: var(--color-surface-2);
+    border-radius: 3px;
+  }
+  
+  .calendar-container::-webkit-scrollbar-thumb {
+    background: var(--color-accent);
+    border-radius: 3px;
+  }
+  
+  .calendar-container::-webkit-scrollbar-thumb:hover {
+    background: #5a96fc;
+  }
+  
+  /* Toolbar responsive layout */
   .rbc-toolbar {
     flex-direction: column;
     align-items: stretch;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    min-width: 800px; /* Increased width for better spacing */
+    flex-shrink: 0;
+  }
+  
+  .rbc-toolbar-label {
+    font-size: 1rem;
+    text-align: center;
+    order: -1;
   }
   
   .rbc-btn-group {
     justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+  
+  .rbc-btn-group button {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.75rem;
+    min-width: 60px;
+  }
+  
+  /* Calendar height adjustment for mobile */
+  .rbc-calendar {
+    height: 650px !important;
+  }
+  
+  /* Month view mobile optimizations */
+  .rbc-month-view {
+    font-size: 0.8rem;
+  }
+  
+  .rbc-date-cell {
+    min-height: 90px;
+    padding: 0.3rem;
+    font-size: 0.8rem;
+  }
+  
+  .rbc-date-cell > a {
+    font-size: 0.8rem;
+  }
+  
+  /* Event styling for mobile */
+  .rbc-month-view .rbc-event {
+    min-height: 20px;
+    padding: 2px 4px;
+    font-size: 0.7rem;
+    margin: 1px 0;
+  }
+  
+  .calendar-event-item {
+    font-size: 0.7rem;
+    gap: 3px;
+  }
+  
+  .calendar-event-item .calendar-event-dot {
+    width: 4px;
+    height: 4px;
+  }
+  
+  /* Week/Day view mobile optimizations */
+  .rbc-time-view {
+    font-size: 0.8rem;
+  }
+  
+  .rbc-time-slot {
+    min-height: 40px;
+  }
+  
+  .rbc-time-header {
+    font-size: 0.75rem;
+    min-width: 800px; /* Increased width for better spacing */
+    flex-shrink: 0;
+  }
+  
+  .rbc-time-header-content {
+    font-size: 0.7rem;
+  }
+  
+  .rbc-event {
+    font-size: 0.7rem;
+    padding: 1px 3px;
+  }
+  
+  /* Agenda view mobile optimizations */
+  .rbc-agenda-view {
+    padding: 0.25rem;
+  }
+  
+  .rbc-agenda-view table {
+    font-size: 0.8rem;
+  }
+  
+  .rbc-agenda-view thead th {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .rbc-agenda-view tbody > tr > td {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.75rem;
+  }
+  
+  /* Column sizing for mobile agenda */
+  .rbc-agenda-view tbody tr > td:nth-child(1) { width: 25%; }
+  .rbc-agenda-view tbody tr > td:nth-child(2) { width: 20%; }
+  .rbc-agenda-view tbody tr > td:nth-child(3) { width: auto; }
+  .rbc-agenda-view tbody tr > td:nth-child(4) { width: 15%; }
+  .rbc-agenda-view tbody tr > td:nth-child(5) { width: 20%; }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .calendar-container {
+    padding: 0.1rem;
+    margin: 0.1rem 0;
+  }
+  
+  .rbc-calendar {
+    height: 500px !important;
+  }
+  
+  .rbc-toolbar {
+    padding: 0.25rem;
+  }
+  
+  .rbc-toolbar-label {
+    font-size: 0.9rem;
+  }
+  
+  .rbc-btn-group button {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.7rem;
+    min-width: 50px;
   }
   
   .rbc-date-cell {
     min-height: 80px;
-    padding: 0.25rem;
+    padding: 0.2rem;
+    font-size: 0.75rem;
+  }
+  
+  .rbc-month-view .rbc-event {
+    min-height: 18px;
+    padding: 1px 3px;
+    font-size: 0.65rem;
+  }
+  
+  .calendar-event-item {
+    font-size: 0.65rem;
+  }
+  
+  .rbc-time-slot {
+    min-height: 35px;
+  }
+  
+  .rbc-agenda-view {
+    padding: 0.1rem;
+  }
+  
+  .rbc-agenda-view table {
+    font-size: 0.7rem;
+  }
+  
+  .rbc-agenda-view thead th {
+    padding: 0.4rem 0.1rem;
+    font-size: 0.7rem;
+  }
+  
+  .rbc-agenda-view tbody > tr > td {
+    padding: 0.4rem 0.1rem;
+    font-size: 0.7rem;
   }
 }
