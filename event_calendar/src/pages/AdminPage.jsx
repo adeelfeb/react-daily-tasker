@@ -4,6 +4,7 @@ import { useEvents } from '../context/EventsContext';
 import { usersAPI } from '../services/api';
 import Layout from '../components/layout/Layout';
 import EventForm from '../components/forms/EventForm';
+import ConfirmationModal from '../components/common/ConfirmationModal';
 import './AdminPage.css';
 
 const AdminPage = () => {
@@ -14,6 +15,8 @@ const AdminPage = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [activeTab, setActiveTab] = useState('events');
   const [isLoading, setIsLoading] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState(null);
 
   useEffect(() => {
     fetchUsers();
@@ -36,10 +39,16 @@ const AdminPage = () => {
     setShowEventForm(true);
   };
 
-  const handleDeleteEvent = async (eventId) => {
-    if (window.confirm('Are you sure you want to delete this event?')) {
-      await deleteEvent(eventId);
+  const handleDeleteEvent = (event) => {
+    setEventToDelete(event);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (eventToDelete) {
+      await deleteEvent(eventToDelete._id);
     }
+    setEventToDelete(null);
   };
 
   const handleEventFormSuccess = () => {
@@ -135,7 +144,7 @@ const AdminPage = () => {
                           </button>
                           <button
                             className="btn btn-sm btn-danger"
-                            onClick={() => handleDeleteEvent(event._id)}
+                            onClick={() => handleDeleteEvent(event)}
                           >
                             Delete
                           </button>
@@ -202,8 +211,24 @@ const AdminPage = () => {
               event={selectedEvent}
               onClose={handleEventFormClose}
               onSuccess={handleEventFormSuccess}
+              onDelete={handleDeleteEvent}
             />
           )}
+
+          {/* Delete Confirmation Modal */}
+          <ConfirmationModal
+            isOpen={showDeleteConfirm}
+            onClose={() => {
+              setShowDeleteConfirm(false);
+              setEventToDelete(null);
+            }}
+            onConfirm={handleDeleteConfirm}
+            title="Delete Event"
+            message={`Are you sure you want to delete "${eventToDelete?.title}"? This action cannot be undone.`}
+            confirmText="Yes"
+            cancelText="Cancel"
+            type="danger"
+          />
         </div>
       </div>
     </Layout>

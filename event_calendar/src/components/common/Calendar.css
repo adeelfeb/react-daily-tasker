@@ -148,16 +148,19 @@
 
 .rbc-event { 
   border-radius: 8px; 
-  padding: 4px 8px; 
+  padding: 6px 10px; 
   font-size: 0.8rem; 
   font-weight: 600; 
   color: #ffffff; 
-  border: none; 
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
   cursor: pointer;
   position: relative;
   overflow: hidden;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
 }
 
 .rbc-event::before {
@@ -231,14 +234,16 @@
 
 /* Make month view events thicker and easier to click */
 .rbc-month-view .rbc-event {
-  min-height: 28px;
-  padding: 6px 8px;
+  min-height: 30px;
+  padding: 8px 10px;
   box-sizing: border-box;
   z-index: 1;
-  border-radius: 6px;
-  font-size: 0.78rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
   font-weight: 500;
   white-space: nowrap;
+  margin: 2px 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
@@ -286,11 +291,12 @@
 
 /* Ensure events are properly displayed in month cells */
 .rbc-date-cell .rbc-events-container {
-  margin: 2px 0;
+  margin: 4px 0;
+  padding: 0 2px;
 }
 
 .rbc-date-cell .rbc-event {
-  margin: 1px 0;
+  margin: 3px 0;
   width: 100%;
   box-sizing: border-box;
 }
@@ -608,10 +614,11 @@
   
   /* Event styling for mobile */
   .rbc-month-view .rbc-event {
-    min-height: 20px;
-    padding: 2px 4px;
+    min-height: 22px;
+    padding: 4px 6px;
     font-size: 0.7rem;
-    margin: 1px 0;
+    margin: 2px 0;
+    border-radius: 6px;
   }
   
   .calendar-event-item {
@@ -734,9 +741,11 @@
   }
   
   .rbc-month-view .rbc-event {
-    min-height: 18px;
-    padding: 1px 3px;
+    min-height: 20px;
+    padding: 3px 5px;
     font-size: 0.65rem;
+    margin: 2px 0;
+    border-radius: 5px;
   }
   
   .calendar-event-item {

@@ -4,6 +4,7 @@ import { eventsAPI } from '../services/api';
 import Calendar from '../components/common/Calendar';
 import SimpleMonthCalendar from '../components/common/SimpleMonthCalendar';
 import EventForm from '../components/forms/EventForm';
+import ConfirmationModal from '../components/common/ConfirmationModal';
 import errorHandler from '../utils/errorHandler';
 import './AdminDashboard.css';
 
@@ -16,6 +17,9 @@ const AdminDashboard = () => {
   const [selectedEvent, setSelectedEvent] = useState(null); // non-null only when editing
   const [draftEvent, setDraftEvent] = useState(null); // used for creating with prefilled dates
   const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'list'
+  const [calendarView, setCalendarView] = useState('month'); // 'month' | 'advanced'
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState(null);
 
   useEffect(() => {
     fetchEvents();
@@ -62,16 +66,22 @@ const AdminDashboard = () => {
     setShowEventForm(true);
   };
 
-  const handleDeleteEvent = async (eventId) => {
-    if (window.confirm('Are you sure you want to delete this event?')) {
+  const handleDeleteEvent = (event) => {
+    setEventToDelete(event);
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (eventToDelete) {
       try {
-        await eventsAPI.deleteEvent(eventId);
+        await eventsAPI.deleteEvent(eventToDelete.id);
         await fetchEvents();
         errorHandler.success('Event deleted successfully');
       } catch (err) {
         errorHandler.handleApiError(err, 'deleting event');
       }
     }
+    setEventToDelete(null);
   };
 
   const handleEventFormClose = () => {
@@ -203,7 +213,22 @@ const AdminDashboard = () => {
               </button>
             </div>
             <div className="toolbar-right">
-              {/* Calendar view buttons removed - using default month view only */}
+              {viewMode === 'calendar' && (
+                <div className="segmented">
+                  <button 
+                    className={calendarView === 'month' ? 'active' : ''}
+                    onClick={() => setCalendarView('month')}
+                  >
+                    Month
+                  </button>
+                  <button 
+                    className={calendarView === 'advanced' ? 'active' : ''}
+                    onClick={() => setCalendarView('advanced')}
+                  >
+                    Advanced
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -223,20 +248,43 @@ const AdminDashboard = () => {
           
           {viewMode === 'calendar' ? (
             <div className="calendar-container">
-              <SimpleMonthCalendar
-                events={events}
-                onEventClick={handleEditEvent}
-                onDateClick={(date) => {
-                  // Prefill a 1-hour slot for new event creation
-                  const start = new Date(date);
-                  const end = new Date(date);
-                  end.setHours(end.getHours() + 1);
-                  setSelectedEvent(null);
-                  setDraftEvent({ start, end });
-                  setShowEventForm(true);
-                }}
-                enableInternalViewModal={false}
-              />
+              {calendarView === 'month' ? (
+                <SimpleMonthCalendar
+                  events={events}
+                  onEventClick={handleEditEvent}
+                  onDateClick={(date) => {
+                    // Prefill a 1-hour slot for new event creation
+                    const start = new Date(date);
+                    const end = new Date(date);
+                    end.setHours(end.getHours() + 1);
+                    setSelectedEvent(null);
+                    setDraftEvent({ start, end });
+                    setShowEventForm(true);
+                  }}
+                  enableInternalViewModal={false}
+                />
+              ) : (
+                <Calendar 
+                  events={events}
+                  onEventClick={handleEditEvent}
+                  onCreateOverlapping={(baseEvent) => {
+                    const start = new Date(baseEvent.start);
+                    const end = new Date(baseEvent.end || start.getTime() + 60 * 60 * 1000);
+                    setSelectedEvent(null);
+                    setDraftEvent({ start, end });
+                    setShowEventForm(true);
+                  }}
+                  onDateClick={(date) => {
+                    // Prefill a 1-hour slot for new event creation
+                    const start = new Date(date);
+                    const end = new Date(date);
+                    end.setHours(end.getHours() + 1);
+                    setSelectedEvent(null);
+                    setDraftEvent({ start, end });
+                    setShowEventForm(true);
+                  }}
+                />
+              )}
             </div>
           ) : (
             <div className="events-list">
@@ -265,7 +313,7 @@ const AdminDashboard = () => {
                       </button>
                       <button 
                         className="btn btn-sm btn-danger"
-                        onClick={() => handleDeleteEvent(event.id)}
+                        onClick={() => handleDeleteEvent(event)}
                       >
                         Delete
                       </button>
@@ -313,7 +361,7 @@ const AdminDashboard = () => {
                             <td style={{ padding: '0.6rem 0.8rem', borderBottom: '1px solid var(--color-border)' }}>
                               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                                 <button className="btn btn-sm btn-outline" onClick={() => handleEditEvent(ev)}>Edit</button>
-                                <button className="btn btn-sm btn-danger" onClick={() => handleDeleteEvent(ev.id)}>Delete</button>
+                                <button className="btn btn-sm btn-danger" onClick={() => handleDeleteEvent(ev)}>Delete</button>
                               </div>
                             </td>
                           </tr>
@@ -348,10 +396,26 @@ const AdminDashboard = () => {
               initialDates={draftEvent}
               onSubmit={handleEventFormSubmit}
               onClose={handleEventFormClose}
+              onDelete={handleDeleteEvent}
             />
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteConfirm}
+        onClose={() => {
+          setShowDeleteConfirm(false);
+          setEventToDelete(null);
+        }}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Event"
+        message={`Are you sure you want to delete "${eventToDelete?.title}"? This action cannot be undone.`}
+        confirmText="Yes"
+        cancelText="Cancel"
+        type="danger"
+      />
     </div>
   );
 };

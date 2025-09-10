@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import errorHandler from '../../utils/errorHandler';
 import { EVENT_TYPES } from '../../constants';
+import ConfirmationModal from '../common/ConfirmationModal';
 import './EventForm.css';
 
-const EventForm = ({ event, initialDates, onSubmit, onClose }) => {
+const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -15,6 +16,7 @@ const EventForm = ({ event, initialDates, onSubmit, onClose }) => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (event) {
@@ -148,6 +150,22 @@ const EventForm = ({ event, initialDates, onSubmit, onClose }) => {
     onClose();
   };
 
+  const handleDeleteClick = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (onDelete && event) {
+      try {
+        await onDelete(event.id);
+        errorHandler.success('Event deleted successfully');
+        onClose();
+      } catch (error) {
+        errorHandler.error('Failed to delete event');
+      }
+    }
+  };
+
   return (
     <div className="event-form-container">
       <div className="event-form-header">
@@ -261,6 +279,16 @@ const EventForm = ({ event, initialDates, onSubmit, onClose }) => {
           )}
 
           <div className="form-actions">
+            {event && onDelete && (
+              <button
+                type="button"
+                onClick={handleDeleteClick}
+                className="btn btn-danger"
+                disabled={isSubmitting}
+              >
+                Delete Event
+              </button>
+            )}
             <button
               type="button"
               onClick={handleClose}
@@ -278,6 +306,17 @@ const EventForm = ({ event, initialDates, onSubmit, onClose }) => {
             </button>
           </div>
         </form>
+        
+        <ConfirmationModal
+          isOpen={showDeleteConfirm}
+          onClose={() => setShowDeleteConfirm(false)}
+          onConfirm={handleDeleteConfirm}
+          title="Delete Event"
+          message={`Are you sure you want to delete "${event?.title}"? This action cannot be undone.`}
+          confirmText="Yes"
+          cancelText="Cancel"
+          type="danger"
+        />
     </div>
   );
 };
