@@ -115,7 +115,7 @@ const AdminPage = () => {
                         </div>
                         <div className="event-content">
                           <div className="event-details">
-                            <p><strong>Type:</strong> {event.type}</p>
+                            <p><strong>Type:</strong> <span className={`event-type event-type-${event.type}`}>{event.type}</span></p>
                             <p><strong>Start:</strong> {formatDate(event.start)}</p>
                             <p><strong>End:</strong> {formatDate(event.end)}</p>
                             {event.location && (

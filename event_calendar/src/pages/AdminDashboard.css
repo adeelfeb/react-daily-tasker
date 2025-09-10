@@ -154,14 +154,34 @@
 }
 
 .event-type { 
-  background-color: var(--color-accent); 
-  color: #0b0e14; 
   padding: 0.2rem 0.5rem; 
-  border-radius: 4px; 
+  border-radius: 12px; 
   font-size: 0.7rem; 
+  font-weight: 600;
   text-transform: uppercase; 
+  letter-spacing: 0.5px;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.event-type-meeting {
+  background: var(--color-accent);
+  color: #0b0e14;
+}
+
+.event-type-task {
+  background: #f97316;
+  color: #0b0e14;
+}
+
+.event-type-reminder {
+  background: #22c55e;
+  color: #0b0e14;
+}
+
+.event-type-other {
+  background: #8b5cf6;
+  color: #ffffff;
 }
 
 .error-message {

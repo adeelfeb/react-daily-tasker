@@ -291,7 +291,7 @@ const AdminDashboard = () => {
                         <span className="event-date">
                           {new Date(event.start).toLocaleDateString()} - {new Date(event.end).toLocaleDateString()}
                         </span>
-                        <span className="event-type">{event.type}</span>
+                        <span className={`event-type event-type-${event.type}`}>{event.type}</span>
                       </div>
                       <p className="event-description">{event.description}</p>
                     </div>
@@ -314,7 +314,7 @@ const AdminDashboard = () => {
               </div>
               {/* Simple Upcoming table for next 7 days */}
               <div className="events-list" style={{ marginTop: '1.5rem' }}>
-                <h2>Upcoming (Next 7 days)</h2>
+                <h2>Upcoming Events</h2>
                 <div style={{ overflowX: 'auto' }}>
                   <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
                     <thead>
@@ -346,8 +346,8 @@ const AdminDashboard = () => {
                             <td style={{ padding: '0.6rem 0.8rem', borderBottom: '1px solid var(--color-border)' }}>
                               {ev.title || '\u00A0'}
                             </td>
-                            <td style={{ padding: '0.6rem 0.8rem', borderBottom: '1px solid var(--color-border)', textTransform: 'capitalize' }}>
-                              {ev.type || '\u00A0'}
+                            <td style={{ padding: '0.6rem 0.8rem', borderBottom: '1px solid var(--color-border)' }}>
+                              {ev.type ? <span className={`event-type event-type-${ev.type}`}>{ev.type}</span> : '\u00A0'}
                             </td>
                             <td style={{ padding: '0.6rem 0.8rem', borderBottom: '1px solid var(--color-border)' }}>
                               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
