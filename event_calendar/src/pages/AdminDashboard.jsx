@@ -285,27 +285,29 @@ const AdminDashboard = () => {
                   <div key={event.id} className="event-card">
                     <div className="event-header">
                       <h3>{event.title}</h3>
-                      <div className="event-actions">
-                        <button 
-                          className="btn btn-sm btn-outline"
-                          onClick={() => handleEditEvent(event)}
-                        >
-                          Edit
-                        </button>
-                        <button 
-                          className="btn btn-sm btn-danger"
-                          onClick={() => handleDeleteEvent(event.id)}
-                        >
-                          Delete
-                        </button>
-                      </div>
                     </div>
-                    <p className="event-description">{event.description}</p>
-                    <div className="event-details">
-                      <span className="event-date">
-                        {new Date(event.start).toLocaleDateString()} - {new Date(event.end).toLocaleDateString()}
-                      </span>
-                      <span className="event-type">{event.type}</span>
+                    <div className="event-content">
+                      <div className="event-details">
+                        <span className="event-date">
+                          {new Date(event.start).toLocaleDateString()} - {new Date(event.end).toLocaleDateString()}
+                        </span>
+                        <span className="event-type">{event.type}</span>
+                      </div>
+                      <p className="event-description">{event.description}</p>
+                    </div>
+                    <div className="event-actions">
+                      <button 
+                        className="btn btn-sm btn-outline"
+                        onClick={() => handleEditEvent(event)}
+                      >
+                        Edit
+                      </button>
+                      <button 
+                        className="btn btn-sm btn-danger"
+                        onClick={() => handleDeleteEvent(event.id)}
+                      >
+                        Delete
+                      </button>
                     </div>
                   </div>
                 ))}

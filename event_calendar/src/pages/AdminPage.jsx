@@ -112,31 +112,33 @@ const AdminPage = () => {
                       <div key={event._id} className="event-card">
                         <div className="event-header">
                           <h3>{event.title}</h3>
-                          <div className="event-actions">
-                            <button
-                              className="btn btn-sm btn-secondary"
-                              onClick={() => handleEditEvent(event)}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              className="btn btn-sm btn-danger"
-                              onClick={() => handleDeleteEvent(event._id)}
-                            >
-                              Delete
-                            </button>
-                          </div>
                         </div>
-                        <div className="event-details">
-                          <p><strong>Type:</strong> {event.type}</p>
-                          <p><strong>Start:</strong> {formatDate(event.start)}</p>
-                          <p><strong>End:</strong> {formatDate(event.end)}</p>
-                          {event.location && (
-                            <p><strong>Location:</strong> {event.location}</p>
-                          )}
+                        <div className="event-content">
+                          <div className="event-details">
+                            <p><strong>Type:</strong> {event.type}</p>
+                            <p><strong>Start:</strong> {formatDate(event.start)}</p>
+                            <p><strong>End:</strong> {formatDate(event.end)}</p>
+                            {event.location && (
+                              <p><strong>Location:</strong> {event.location}</p>
+                            )}
+                          </div>
                           {event.description && (
-                            <p><strong>Description:</strong> {event.description}</p>
+                            <p className="event-description"><strong>Description:</strong> {event.description}</p>
                           )}
+                        </div>
+                        <div className="event-actions">
+                          <button
+                            className="btn btn-sm btn-secondary"
+                            onClick={() => handleEditEvent(event)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="btn btn-sm btn-danger"
+                            onClick={() => handleDeleteEvent(event._id)}
+                          >
+                            Delete
+                          </button>
                         </div>
                       </div>
                     ))}
