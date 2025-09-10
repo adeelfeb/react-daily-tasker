@@ -269,9 +269,10 @@ const AdminDashboard = () => {
                   onEventClick={handleEditEvent}
                   onDateClick={(date) => {
                     // Prefill a 1-hour slot for new event creation
-                    const start = new Date(date);
-                    const end = new Date(date);
-                    end.setHours(end.getHours() + 1);
+                    // Create dates in local timezone to avoid day shift
+                    const clickedDate = new Date(date);
+                    const start = new Date(clickedDate.getFullYear(), clickedDate.getMonth(), clickedDate.getDate(), 9, 0);
+                    const end = new Date(clickedDate.getFullYear(), clickedDate.getMonth(), clickedDate.getDate(), 10, 0);
                     setSelectedEvent(null);
                     setDraftEvent({ start, end });
                     setShowEventForm(true);
@@ -283,17 +284,20 @@ const AdminDashboard = () => {
                   events={events}
                   onEventClick={handleEditEvent}
                   onCreateOverlapping={(baseEvent) => {
-                    const start = new Date(baseEvent.start);
-                    const end = new Date(baseEvent.end || start.getTime() + 60 * 60 * 1000);
+                    // Create dates in local timezone to avoid day shift
+                    const baseStart = new Date(baseEvent.start);
+                    const start = new Date(baseStart.getFullYear(), baseStart.getMonth(), baseStart.getDate(), 9, 0);
+                    const end = new Date(baseStart.getFullYear(), baseStart.getMonth(), baseStart.getDate(), 10, 0);
                     setSelectedEvent(null);
                     setDraftEvent({ start, end });
                     setShowEventForm(true);
                   }}
                   onDateClick={(date) => {
                     // Prefill a 1-hour slot for new event creation
-                    const start = new Date(date);
-                    const end = new Date(date);
-                    end.setHours(end.getHours() + 1);
+                    // Create dates in local timezone to avoid day shift
+                    const clickedDate = new Date(date);
+                    const start = new Date(clickedDate.getFullYear(), clickedDate.getMonth(), clickedDate.getDate(), 9, 0);
+                    const end = new Date(clickedDate.getFullYear(), clickedDate.getMonth(), clickedDate.getDate(), 10, 0);
                     setSelectedEvent(null);
                     setDraftEvent({ start, end });
                     setShowEventForm(true);
