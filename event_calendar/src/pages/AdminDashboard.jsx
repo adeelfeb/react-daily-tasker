@@ -17,7 +17,6 @@ const AdminDashboard = () => {
   const [selectedEvent, setSelectedEvent] = useState(null); // non-null only when editing
   const [draftEvent, setDraftEvent] = useState(null); // used for creating with prefilled dates
   const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'list'
-  const [calendarView, setCalendarView] = useState('month'); // 'month' | 'advanced'
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [eventToDelete, setEventToDelete] = useState(null);
 
@@ -228,22 +227,7 @@ const AdminDashboard = () => {
               </button>
             </div>
             <div className="toolbar-right">
-              {viewMode === 'calendar' && (
-                <div className="segmented">
-                  <button 
-                    className={calendarView === 'month' ? 'active' : ''}
-                    onClick={() => setCalendarView('month')}
-                  >
-                    Month
-                  </button>
-                  <button 
-                    className={calendarView === 'advanced' ? 'active' : ''}
-                    onClick={() => setCalendarView('advanced')}
-                  >
-                    Advanced
-                  </button>
-                </div>
-              )}
+              {/* Calendar view toggle removed */}
             </div>
           </div>
         </div>
@@ -263,47 +247,21 @@ const AdminDashboard = () => {
           
           {viewMode === 'calendar' ? (
             <div className="calendar-container">
-              {calendarView === 'month' ? (
-                <SimpleMonthCalendar
-                  events={events}
-                  onEventClick={handleEditEvent}
-                  onDateClick={(date) => {
-                    // Prefill a 1-hour slot for new event creation
-                    // Create dates in local timezone to avoid day shift
-                    const clickedDate = new Date(date);
-                    const start = new Date(clickedDate.getFullYear(), clickedDate.getMonth(), clickedDate.getDate(), 9, 0);
-                    const end = new Date(clickedDate.getFullYear(), clickedDate.getMonth(), clickedDate.getDate(), 10, 0);
-                    setSelectedEvent(null);
-                    setDraftEvent({ start, end });
-                    setShowEventForm(true);
-                  }}
-                  enableInternalViewModal={false}
-                />
-              ) : (
-                <Calendar 
-                  events={events}
-                  onEventClick={handleEditEvent}
-                  onCreateOverlapping={(baseEvent) => {
-                    // Create dates in local timezone to avoid day shift
-                    const baseStart = new Date(baseEvent.start);
-                    const start = new Date(baseStart.getFullYear(), baseStart.getMonth(), baseStart.getDate(), 9, 0);
-                    const end = new Date(baseStart.getFullYear(), baseStart.getMonth(), baseStart.getDate(), 10, 0);
-                    setSelectedEvent(null);
-                    setDraftEvent({ start, end });
-                    setShowEventForm(true);
-                  }}
-                  onDateClick={(date) => {
-                    // Prefill a 1-hour slot for new event creation
-                    // Create dates in local timezone to avoid day shift
-                    const clickedDate = new Date(date);
-                    const start = new Date(clickedDate.getFullYear(), clickedDate.getMonth(), clickedDate.getDate(), 9, 0);
-                    const end = new Date(clickedDate.getFullYear(), clickedDate.getMonth(), clickedDate.getDate(), 10, 0);
-                    setSelectedEvent(null);
-                    setDraftEvent({ start, end });
-                    setShowEventForm(true);
-                  }}
-                />
-              )}
+              <SimpleMonthCalendar
+                events={events}
+                onEventClick={handleEditEvent}
+                onDateClick={(date) => {
+                  // Prefill a 1-hour slot for new event creation
+                  // Create dates in local timezone to avoid day shift
+                  const clickedDate = new Date(date);
+                  const start = new Date(clickedDate.getFullYear(), clickedDate.getMonth(), clickedDate.getDate(), 9, 0);
+                  const end = new Date(clickedDate.getFullYear(), clickedDate.getMonth(), clickedDate.getDate(), 10, 0);
+                  setSelectedEvent(null);
+                  setDraftEvent({ start, end });
+                  setShowEventForm(true);
+                }}
+                enableInternalViewModal={false}
+              />
             </div>
           ) : (
             <div className="events-list">
