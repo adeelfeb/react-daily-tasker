@@ -211,7 +211,9 @@ const AdminPage = () => {
               event={selectedEvent}
               onClose={handleEventFormClose}
               onSuccess={handleEventFormSuccess}
-              onDelete={handleDeleteEvent}
+              onDelete={async (eventId) => {
+                await deleteEvent(eventId);
+              }}
             />
           )}
 

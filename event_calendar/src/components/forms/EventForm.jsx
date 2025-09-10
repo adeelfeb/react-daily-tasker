@@ -157,7 +157,7 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
   const handleDeleteConfirm = async () => {
     if (onDelete && event) {
       try {
-        await onDelete(event.id);
+        await onDelete(event.id || event._id);
         errorHandler.success('Event deleted successfully');
         onClose();
       } catch (error) {

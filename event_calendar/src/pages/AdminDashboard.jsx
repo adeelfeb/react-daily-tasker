@@ -396,7 +396,15 @@ const AdminDashboard = () => {
               initialDates={draftEvent}
               onSubmit={handleEventFormSubmit}
               onClose={handleEventFormClose}
-              onDelete={handleDeleteEvent}
+              onDelete={async (eventId) => {
+                try {
+                  await eventsAPI.deleteEvent(eventId);
+                  await fetchEvents();
+                  errorHandler.success('Event deleted successfully');
+                } catch (err) {
+                  errorHandler.handleApiError(err, 'deleting event');
+                }
+              }}
             />
           </div>
         </div>
