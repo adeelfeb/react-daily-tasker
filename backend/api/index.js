@@ -22,7 +22,7 @@ const app = express();
 
 // Middleware
 // Allow multiple origins via comma-separated FRONTEND_URL env
-const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
+const allowedOrigins = (process.env.FRONTEND_URL || 'https://calander-frontend.vercel.app')
   .split(',')
   .map(o => o.trim())
   .filter(Boolean);
