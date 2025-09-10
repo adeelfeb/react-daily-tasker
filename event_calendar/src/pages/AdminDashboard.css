@@ -8,6 +8,9 @@
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   padding: 0.75rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header-content {
@@ -261,7 +264,13 @@
 }
 
 /* Toolbar below header */
-.dashboard-toolbar { border-bottom: 1px solid var(--color-border); background: var(--color-surface); }
+.dashboard-toolbar { 
+  border-bottom: 1px solid var(--color-border); 
+  background: var(--color-surface);
+  position: sticky;
+  top: 60px; /* Adjust based on header height */
+  z-index: 99;
+}
 .toolbar-row { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; }
 .toolbar-left { display: flex; gap: 0.5rem; align-items: center; flex-wrap: nowrap; }
 .toolbar-left .btn { white-space: nowrap; }

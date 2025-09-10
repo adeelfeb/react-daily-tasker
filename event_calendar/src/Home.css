@@ -12,6 +12,9 @@
   border-bottom: 1px solid var(--color-border);
   background-color: var(--color-surface);
   box-shadow: none;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header-content {
