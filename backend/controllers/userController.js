@@ -39,7 +39,6 @@ export const getUsers = async (req, res) => {
       data: users
     });
   } catch (error) {
-    console.error('Get users error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while fetching users'
@@ -66,7 +65,6 @@ export const getUser = async (req, res) => {
       data: user
     });
   } catch (error) {
-    console.error('Get user error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while fetching user'
@@ -116,7 +114,6 @@ export const updateUser = async (req, res) => {
       data: user
     });
   } catch (error) {
-    console.error('Update user error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while updating user'
@@ -153,7 +150,6 @@ export const deleteUser = async (req, res) => {
       message: 'User deleted successfully'
     });
   } catch (error) {
-    console.error('Delete user error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while deleting user'
@@ -199,7 +195,6 @@ export const toggleUserActive = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Toggle user active error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while toggling user status'
@@ -236,7 +231,6 @@ export const getUserStats = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get user stats error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while fetching user statistics'

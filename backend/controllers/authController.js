@@ -52,7 +52,6 @@ export const register = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Registration error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error during registration'
@@ -114,7 +113,6 @@ export const login = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Login error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error during login'
@@ -143,7 +141,6 @@ export const getProfile = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Get profile error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while fetching profile'
@@ -193,7 +190,6 @@ export const updateProfile = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Update profile error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while updating profile'
@@ -240,7 +236,6 @@ export const forgotPassword = async (req, res) => {
       ...(process.env.NODE_ENV === 'development' && { resetToken })
     });
   } catch (error) {
-    console.error('Forgot password error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error during password reset request'
@@ -296,7 +291,6 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    console.error('Reset password error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error during password reset'
@@ -347,7 +341,6 @@ export const changePassword = async (req, res) => {
       message: 'Password changed successfully'
     });
   } catch (error) {
-    console.error('Change password error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error during password change'
@@ -365,7 +358,6 @@ export const logout = async (req, res) => {
       message: 'Logout successful'
     });
   } catch (error) {
-    console.error('Logout error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error during logout'
@@ -418,7 +410,6 @@ export const setupAdmin = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Setup admin error:', error);
     res.status(500).json({ success: false, message: 'Server error during admin setup' });
   }
 };

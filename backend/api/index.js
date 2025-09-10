@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import session from 'express-session';
-import MongoStore from 'connect-mongo';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import connectDB from '../config/database.js';
@@ -18,7 +17,10 @@ dotenv.config();
 
 // Connect to database (with error handling for serverless)
 connectDB().catch(err => {
-  console.error('Failed to connect to database:', err);
+  // Don't log errors in production to avoid exposing sensitive info
+  if (process.env.NODE_ENV !== 'production') {
+    console.error('Failed to connect to database:', err);
+  }
   // Don't exit in serverless environment
 });
 
@@ -49,15 +51,13 @@ app.get('/favicon.ico', (req, res) => {
   res.status(204).end();
 });
 
-// Session configuration
+// Session configuration - simplified for serverless
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-super-secret-session-key',
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI || 'mongodb://localhost:27017/event-calendar',
-    ttl: 14 * 24 * 60 * 60 // 14 days
-  }),
+  // Use memory store for serverless (sessions won't persist across function invocations)
+  // In production, consider using Redis or another external store
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
@@ -65,10 +65,21 @@ app.use(session({
   }
 }));
 
+// Database connection check middleware
+const checkDatabaseConnection = (req, res, next) => {
+  if (mongoose.connection.readyState !== 1) {
+    return res.status(503).json({
+      success: false,
+      message: 'Database connection not available. Please try again later.'
+    });
+  }
+  next();
+};
+
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/events', eventRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/auth', checkDatabaseConnection, authRoutes);
+app.use('/api/events', checkDatabaseConnection, eventRoutes);
+app.use('/api/users', checkDatabaseConnection, userRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -80,7 +91,6 @@ app.get('/api/health', (req, res) => {
       database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
     });
   } catch (error) {
-    console.error('Health endpoint error:', error);
     res.status(200).json({
       success: true,
       message: 'Server is running',
@@ -88,6 +98,15 @@ app.get('/api/health', (req, res) => {
       database: 'unknown'
     });
   }
+});
+
+// Simple test endpoint (no database required)
+app.get('/api/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'API is working',
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Root endpoint - simple response without database dependency
@@ -100,7 +119,6 @@ app.get('/', (req, res) => {
       status: 'running'
     });
   } catch (error) {
-    console.error('Root endpoint error:', error);
     res.status(200).json({
       success: true,
       message: 'Event Calendar API',

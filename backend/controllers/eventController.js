@@ -16,7 +16,6 @@ export const getPublicEvents = async (req, res) => {
       data: events
     });
   } catch (error) {
-    console.error('Get public events error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while fetching public events'
@@ -75,7 +74,6 @@ export const getEvents = async (req, res) => {
       data: events
     });
   } catch (error) {
-    console.error('Get events error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while fetching events'
@@ -117,7 +115,6 @@ export const getEvent = async (req, res) => {
       data: event
     });
   } catch (error) {
-    console.error('Get event error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while fetching event'
@@ -146,7 +143,6 @@ export const createEvent = async (req, res) => {
       data: event
     });
   } catch (error) {
-    console.error('Create event error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while creating event'
@@ -230,7 +226,6 @@ export const updateEvent = async (req, res) => {
       data: event
     });
   } catch (error) {
-    console.error('Update event error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while updating event'
@@ -270,7 +265,6 @@ export const deleteEvent = async (req, res) => {
       message: 'Event deleted successfully'
     });
   } catch (error) {
-    console.error('Delete event error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while deleting event'
@@ -316,7 +310,6 @@ export const getEventsByRange = async (req, res) => {
       data: events
     });
   } catch (error) {
-    console.error('Get events by range error:', error);
     res.status(500).json({
       success: false,
       message: 'Server error while fetching events by range'
