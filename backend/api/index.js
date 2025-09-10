@@ -26,30 +26,48 @@ connectDB().catch(err => {
 
 const app = express();
 
+// Handle favicon requests FIRST - before any middleware
+app.get('/favicon.ico', (req, res) => {
+  try {
+    // Return a simple 204 No Content response
+    res.setHeader('Content-Type', 'image/x-icon');
+    res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
+    res.status(204).end();
+  } catch (error) {
+    // Fallback if there's any error
+    res.status(204).end();
+  }
+});
+
+// Handle other common favicon requests
+app.get('/favicon.png', (req, res) => {
+  res.status(204).end();
+});
+
+app.get('/apple-touch-icon.png', (req, res) => {
+  res.status(204).end();
+});
+
 // Middleware
 // Allow multiple origins via comma-separated FRONTEND_URL env
-const allowedOrigins = (process.env.FRONTEND_URL || 'https://calander-frontend.vercel.app')
+const allowedOrigins = ('https://calander-frontend.vercel.app' || process.env.FRONTEND_URL || 'https://calander-frontend.vercel.app')
   .split(',')
   .map(o => o.trim())
   .filter(Boolean);
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps, curl)
+    // Allow requests with no origin (like mobile apps, curl, favicon requests)
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) return callback(null, true);
     return callback(new Error('Not allowed by CORS'));
   },
-  credentials: true
+  credentials: true,
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
 }));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Handle favicon requests before session middleware to avoid database dependency
-app.get('/favicon.ico', (req, res) => {
-  res.status(204).end();
-});
 
 // Session configuration - simplified for serverless
 app.use(session({
