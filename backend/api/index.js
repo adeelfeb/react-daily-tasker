@@ -44,6 +44,10 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Handle favicon requests before session middleware to avoid database dependency
+app.get('/favicon.ico', (req, res) => {
+  res.status(404).end();
+});
 
 // Session configuration
 app.use(session({
