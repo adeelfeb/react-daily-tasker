@@ -78,7 +78,22 @@ const AdminDashboard = () => {
         await fetchEvents();
         errorHandler.success('Event deleted successfully');
       } catch (err) {
-        errorHandler.handleApiError(err, 'deleting event');
+        // Handle different types of errors with specific messages
+        let errorMessage = 'Failed to delete event';
+        
+        if (err?.response?.status === 404) {
+          errorMessage = 'Event not found. It may have already been deleted.';
+        } else if (err?.response?.status === 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else if (err?.code === 'NETWORK_ERROR' || !err?.response) {
+          errorMessage = 'Unable to connect to server. Please check your connection.';
+        } else if (err?.response?.data?.message) {
+          errorMessage = err.response.data.message;
+        } else if (err?.message) {
+          errorMessage = err.message;
+        }
+        
+        errorHandler.error(errorMessage);
       }
     }
     setEventToDelete(null);
@@ -402,7 +417,22 @@ const AdminDashboard = () => {
                   await fetchEvents();
                   errorHandler.success('Event deleted successfully');
                 } catch (err) {
-                  errorHandler.handleApiError(err, 'deleting event');
+                  // Handle different types of errors with specific messages
+                  let errorMessage = 'Failed to delete event';
+                  
+                  if (err?.response?.status === 404) {
+                    errorMessage = 'Event not found. It may have already been deleted.';
+                  } else if (err?.response?.status === 500) {
+                    errorMessage = 'Server error. Please try again later.';
+                  } else if (err?.code === 'NETWORK_ERROR' || !err?.response) {
+                    errorMessage = 'Unable to connect to server. Please check your connection.';
+                  } else if (err?.response?.data?.message) {
+                    errorMessage = err.response.data.message;
+                  } else if (err?.message) {
+                    errorMessage = err.message;
+                  }
+                  
+                  errorHandler.error(errorMessage);
                 }
               }}
             />

@@ -161,7 +161,22 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
         errorHandler.success('Event deleted successfully');
         onClose();
       } catch (error) {
-        errorHandler.error('Failed to delete event');
+        // Handle different types of errors with specific messages
+        let errorMessage = 'Failed to delete event';
+        
+        if (error?.response?.status === 404) {
+          errorMessage = 'Event not found. It may have already been deleted.';
+        } else if (error?.response?.status === 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else if (error?.code === 'NETWORK_ERROR' || !error?.response) {
+          errorMessage = 'Unable to connect to server. Please check your connection.';
+        } else if (error?.response?.data?.message) {
+          errorMessage = error.response.data.message;
+        } else if (error?.message) {
+          errorMessage = error.message;
+        }
+        
+        errorHandler.error(errorMessage);
       }
     }
   };
