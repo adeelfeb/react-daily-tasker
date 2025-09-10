@@ -16,7 +16,6 @@ const AdminDashboard = () => {
   const [selectedEvent, setSelectedEvent] = useState(null); // non-null only when editing
   const [draftEvent, setDraftEvent] = useState(null); // used for creating with prefilled dates
   const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'list'
-  const [calendarView, setCalendarView] = useState('month'); // 'month' | 'advanced'
 
   useEffect(() => {
     fetchEvents();
@@ -204,22 +203,7 @@ const AdminDashboard = () => {
               </button>
             </div>
             <div className="toolbar-right">
-              {viewMode === 'calendar' && (
-                <div className="segmented">
-                  <button 
-                    className={calendarView === 'month' ? 'active' : ''}
-                    onClick={() => setCalendarView('month')}
-                  >
-                    Month
-                  </button>
-                  <button 
-                    className={calendarView === 'advanced' ? 'active' : ''}
-                    onClick={() => setCalendarView('advanced')}
-                  >
-                    Advanced
-                  </button>
-                </div>
-              )}
+              {/* Calendar view buttons removed - using default month view only */}
             </div>
           </div>
         </div>
@@ -239,43 +223,20 @@ const AdminDashboard = () => {
           
           {viewMode === 'calendar' ? (
             <div className="calendar-container">
-              {calendarView === 'month' ? (
-                <SimpleMonthCalendar
-                  events={events}
-                  onEventClick={handleEditEvent}
-                  onDateClick={(date) => {
-                    // Prefill a 1-hour slot for new event creation
-                    const start = new Date(date);
-                    const end = new Date(date);
-                    end.setHours(end.getHours() + 1);
-                    setSelectedEvent(null);
-                    setDraftEvent({ start, end });
-                    setShowEventForm(true);
-                  }}
-                  enableInternalViewModal={false}
-                />
-              ) : (
-                <Calendar 
-                  events={events}
-                  onEventClick={handleEditEvent}
-                  onCreateOverlapping={(baseEvent) => {
-                    const start = new Date(baseEvent.start);
-                    const end = new Date(baseEvent.end || start.getTime() + 60 * 60 * 1000);
-                    setSelectedEvent(null);
-                    setDraftEvent({ start, end });
-                    setShowEventForm(true);
-                  }}
-                  onDateClick={(date) => {
-                    // Prefill a 1-hour slot for new event creation
-                    const start = new Date(date);
-                    const end = new Date(date);
-                    end.setHours(end.getHours() + 1);
-                    setSelectedEvent(null);
-                    setDraftEvent({ start, end });
-                    setShowEventForm(true);
-                  }}
-                />
-              )}
+              <SimpleMonthCalendar
+                events={events}
+                onEventClick={handleEditEvent}
+                onDateClick={(date) => {
+                  // Prefill a 1-hour slot for new event creation
+                  const start = new Date(date);
+                  const end = new Date(date);
+                  end.setHours(end.getHours() + 1);
+                  setSelectedEvent(null);
+                  setDraftEvent({ start, end });
+                  setShowEventForm(true);
+                }}
+                enableInternalViewModal={false}
+              />
             </div>
           ) : (
             <div className="events-list">
