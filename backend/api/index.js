@@ -4,13 +4,13 @@ import bodyParser from 'body-parser';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import dotenv from 'dotenv';
-import connectDB from './config/database.js';
-import { errorHandler, notFound } from './middleware/errorHandler.js';
+import connectDB from '../config/database.js';
+import { errorHandler, notFound } from '../middleware/errorHandler.js';
 
 // Import routes
-import authRoutes from './routes/auth.js';
-import eventRoutes from './routes/events.js';
-import userRoutes from './routes/users.js';
+import authRoutes from '../routes/auth.js';
+import eventRoutes from '../routes/events.js';
+import userRoutes from '../routes/users.js';
 
 // Load environment variables
 dotenv.config();
