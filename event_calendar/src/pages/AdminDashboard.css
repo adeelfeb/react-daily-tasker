@@ -72,6 +72,9 @@
   background-color: var(--color-surface-2);
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .event-card:hover {
@@ -85,6 +88,7 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 0.5rem;
+  flex: 1;
 }
 
 .event-header h3 { color: var(--color-text); margin: 0; font-size: 1.05rem; }
@@ -92,6 +96,9 @@
 .event-actions {
   display: flex;
   gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  justify-content: flex-end;
 }
 
 .event-description { color: var(--color-text-muted); margin: 0.5rem 0; font-size: 0.9rem; }
@@ -219,6 +226,42 @@
   background-color: #c82333;
 }
 
+/* Edit button styling with color and glow */
+.event-actions .btn-outline {
+  background-color: var(--color-accent);
+  color: #0b0e14;
+  border: 1px solid var(--color-accent);
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(110, 168, 254, 0.3);
+}
+
+.event-actions .btn-outline:hover {
+  background-color: #5a96fc;
+  color: #0b0e14;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(110, 168, 254, 0.4);
+  border-color: #5a96fc;
+}
+
+/* Table edit button styling */
+.events-list table .btn-outline {
+  background-color: var(--color-accent);
+  color: #0b0e14;
+  border: 1px solid var(--color-accent);
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(110, 168, 254, 0.3);
+}
+
+.events-list table .btn-outline:hover {
+  background-color: #5a96fc;
+  color: #0b0e14;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(110, 168, 254, 0.4);
+  border-color: #5a96fc;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .admin-dashboard {
@@ -314,6 +357,7 @@
     flex-direction: column;
     gap: 0.5rem;
     align-items: flex-start;
+    flex: 1;
   }
   
   .event-header h3 {
@@ -323,6 +367,8 @@
   .event-actions {
     align-self: stretch;
     justify-content: space-between;
+    margin-top: auto;
+    padding-top: 1rem;
   }
   
   .event-actions .btn {

@@ -170,6 +170,12 @@ const AdminDashboard = () => {
               <p>{user?.name ? user.name : 'Admin'}</p>
             </div>
             <div className="header-actions">
+              <button 
+                className="btn btn-outline" 
+                onClick={() => window.open('/events', '_blank')}
+              >
+                View Events
+              </button>
               <button className="btn btn-outline" onClick={handleLogout}>Logout</button>
             </div>
           </div>

@@ -4,6 +4,10 @@
   border-radius: 8px;
   padding: 2rem;
   text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  margin: 0 auto;
 }
 
 .simple-calendar h3 {
@@ -16,6 +20,9 @@
   border: 2px dashed var(--color-border);
   border-radius: 8px;
   background-color: var(--color-surface-2);
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 .calendar-placeholder p {
@@ -42,70 +49,100 @@
   .simple-calendar {
     padding: 1rem;
     margin: 0.25rem 0;
+    width: 100%;
+    max-width: 100%;
   }
   
   .simple-calendar h3 {
     font-size: 1.1rem;
     margin-bottom: 0.75rem;
+    word-wrap: break-word;
   }
   
   .calendar-placeholder {
     padding: 1.5rem;
+    width: 100%;
+    max-width: 100%;
   }
   
   .calendar-placeholder p {
     font-size: 0.9rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .calendar-placeholder button {
     padding: 0.4rem 0.8rem;
     font-size: 0.85rem;
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
   }
 }
 
 @media (max-width: 480px) {
   .simple-calendar {
     padding: 0.75rem;
+    width: 100%;
+    max-width: 100%;
   }
   
   .simple-calendar h3 {
     font-size: 1rem;
     margin-bottom: 0.5rem;
+    word-wrap: break-word;
   }
   
   .calendar-placeholder {
     padding: 1rem;
+    width: 100%;
+    max-width: 100%;
   }
   
   .calendar-placeholder p {
     font-size: 0.85rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .calendar-placeholder button {
     padding: 0.35rem 0.7rem;
     font-size: 0.8rem;
+    width: 100%;
+    max-width: 180px;
+    margin: 0 auto;
   }
 }
 
 @media (max-width: 360px) {
   .simple-calendar {
     padding: 0.5rem;
+    width: 100%;
+    max-width: 100%;
   }
   
   .simple-calendar h3 {
     font-size: 0.95rem;
+    word-wrap: break-word;
   }
   
   .calendar-placeholder {
     padding: 0.75rem;
+    width: 100%;
+    max-width: 100%;
   }
   
   .calendar-placeholder p {
     font-size: 0.8rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
   
   .calendar-placeholder button {
     padding: 0.3rem 0.6rem;
     font-size: 0.75rem;
+    width: 100%;
+    max-width: 160px;
+    margin: 0 auto;
   }
 }

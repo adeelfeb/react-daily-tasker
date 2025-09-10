@@ -4,6 +4,29 @@
   border-radius: 8px;
   padding: 0.5rem;
   margin: 0.75rem 0;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.calendar-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.calendar-container::-webkit-scrollbar-track {
+  background: var(--color-surface-2);
+  border-radius: 3px;
+}
+
+.calendar-container::-webkit-scrollbar-thumb {
+  background: var(--color-accent);
+  border-radius: 3px;
+}
+
+.calendar-container::-webkit-scrollbar-thumb:hover {
+  background: #5a96fc;
 }
 
 /* Event items for different views */
@@ -398,6 +421,8 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
+    width: 100%;
+    box-sizing: border-box;
   }
   
   .rbc-time-view::-webkit-scrollbar {
@@ -424,6 +449,8 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   min-width: 800px; /* Match time view width */
   flex-shrink: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .rbc-time-content {
@@ -431,6 +458,8 @@
   min-width: 800px; /* Match time view width */
   flex-shrink: 0;
   background: var(--color-surface);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .rbc-time-slot {
@@ -507,6 +536,8 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
+    width: 100%;
+    max-width: 100%;
   }
   
   .calendar-container::-webkit-scrollbar {
