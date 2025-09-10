@@ -3,6 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import connectDB from '../config/database.js';
 import { errorHandler, notFound } from '../middleware/errorHandler.js';
@@ -15,8 +16,11 @@ import userRoutes from '../routes/users.js';
 // Load environment variables
 dotenv.config();
 
-// Connect to database
-connectDB();
+// Connect to database (with error handling for serverless)
+connectDB().catch(err => {
+  console.error('Failed to connect to database:', err);
+  // Don't exit in serverless environment
+});
 
 const app = express();
 
@@ -69,7 +73,8 @@ app.get('/api/health', (req, res) => {
   res.json({
     success: true,
     message: 'Server is running',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
   });
 });
 
