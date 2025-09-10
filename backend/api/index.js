@@ -44,6 +44,7 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+
 // Session configuration
 app.use(session({
   secret: process.env.SESSION_SECRET || 'your-super-secret-session-key',
@@ -59,9 +60,6 @@ app.use(session({
     maxAge: 14 * 24 * 60 * 60 * 1000 // 14 days
   }
 }));
-
-// Ignore favicon requests to avoid noisy 404 logs
-app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 // Routes
 app.use('/api/auth', authRoutes);
