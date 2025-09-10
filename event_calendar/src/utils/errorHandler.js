@@ -112,22 +112,22 @@ class ErrorHandler {
   }
 
   // Success notification
-  success(message, duration = 3000) {
+  success(message, duration = 6000) {
     return this.addNotification(message, 'success', duration);
   }
 
   // Error notification
-  error(message, duration = 5000) {
+  error(message, duration = 8000) {
     return this.addNotification(message, 'error', duration);
   }
 
   // Warning notification
-  warning(message, duration = 4000) {
+  warning(message, duration = 6000) {
     return this.addNotification(message, 'warning', duration);
   }
 
   // Info notification
-  info(message, duration = 3000) {
+  info(message, duration = 5000) {
     return this.addNotification(message, 'info', duration);
   }
 }

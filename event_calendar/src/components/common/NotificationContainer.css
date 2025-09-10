@@ -18,7 +18,7 @@
   cursor: pointer;
   pointer-events: auto;
   overflow: hidden;
-  animation: slideIn 0.3s ease-out;
+  animation: slideIn 0.15s ease-out; /* snappier entry */
   position: relative;
 }
 
@@ -43,6 +43,7 @@
   align-items: flex-start;
   padding: 16px;
   gap: 12px;
+  will-change: transform, opacity;
 }
 
 .notification-icon {
@@ -116,7 +117,7 @@
 
 @keyframes slideIn {
   from {
-    transform: translateX(100%);
+    transform: translateX(8px); /* shorter travel for faster feel */
     opacity: 0;
   }
   to {
