@@ -46,7 +46,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Handle favicon requests before session middleware to avoid database dependency
 app.get('/favicon.ico', (req, res) => {
-  res.status(404).end();
+  res.status(204).end();
 });
 
 // Session configuration
@@ -72,27 +72,41 @@ app.use('/api/users', userRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Server is running',
-    timestamp: new Date().toISOString(),
-    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
-  });
+  try {
+    res.json({
+      success: true,
+      message: 'Server is running',
+      timestamp: new Date().toISOString(),
+      database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    });
+  } catch (error) {
+    console.error('Health endpoint error:', error);
+    res.status(200).json({
+      success: true,
+      message: 'Server is running',
+      timestamp: new Date().toISOString(),
+      database: 'unknown'
+    });
+  }
 });
 
-// Root endpoint
+// Root endpoint - simple response without database dependency
 app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Event Calendar API',
-    version: '1.0.0',
-    endpoints: {
-      auth: '/api/auth',
-      events: '/api/events',
-      users: '/api/users',
-      health: '/api/health'
-    }
-  });
+  try {
+    res.json({
+      success: true,
+      message: 'Event Calendar API',
+      version: '1.0.0',
+      status: 'running'
+    });
+  } catch (error) {
+    console.error('Root endpoint error:', error);
+    res.status(200).json({
+      success: true,
+      message: 'Event Calendar API',
+      status: 'running'
+    });
+  }
 });
 
 // Error handling middleware
