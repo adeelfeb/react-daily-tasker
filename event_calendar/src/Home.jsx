@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiCalendar, FiCheckCircle, FiBell } from 'react-icons/fi';
+import { useAuth } from './context/AuthContext';
 import SimpleMonthCalendar from './components/common/SimpleMonthCalendar';
 import { eventsAPI } from './services/api';
 import './Home.css';
 
 const Home = () => {
   const navigate = useNavigate();
+  const { isAuthenticated, isAdmin } = useAuth();
   const calendarRef = useRef(null);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -57,9 +59,18 @@ const Home = () => {
               <button className="btn btn-outline" onClick={() => navigate('/events')}>
                 View Events
               </button>
-              <button className="btn btn-primary" onClick={() => navigate('/login')}>
-                Add Event
-              </button>
+              {isAuthenticated ? (
+                <button 
+                  className="btn btn-primary" 
+                  onClick={() => navigate(isAdmin() ? '/admin' : '/dashboard')}
+                >
+                  {isAdmin() ? 'Admin Dashboard' : 'My Dashboard'}
+                </button>
+              ) : (
+                <button className="btn btn-primary" onClick={() => navigate('/login')}>
+                  Add Event
+                </button>
+              )}
             </nav>
           </div>
         </div>

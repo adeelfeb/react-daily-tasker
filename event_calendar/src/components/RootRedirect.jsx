@@ -8,19 +8,10 @@ const RootRedirect = () => {
 
   useEffect(() => {
     if (!isLoading) {
-      if (isAuthenticated) {
-        // If user is authenticated, redirect to appropriate dashboard
-        if (isAdmin()) {
-          navigate('/admin', { replace: true });
-        } else {
-          navigate('/dashboard', { replace: true });
-        }
-      } else {
-        // If not authenticated, show home page
-        navigate('/home', { replace: true });
-      }
+      // Always redirect to home page regardless of authentication status
+      navigate('/home', { replace: true });
     }
-  }, [isAuthenticated, isAdmin, isLoading, navigate]);
+  }, [isLoading, navigate]);
 
   if (isLoading) {
     return (
