@@ -100,29 +100,10 @@ export const AuthProvider = ({ children }) => {
       
       return { success: true, user };
     } catch (error) {
-      // Mock authentication when API is not available
-      // Check for specific admin emails or use a more reliable method
-      const isAdminEmail = credentials.email === 'admin@demo.com' || 
-                          credentials.email === 'admin@example.com' ||
-                          credentials.email.includes('admin@');
-      
-      const mockUser = {
-        id: 1,
-        name: credentials.email.split('@')[0],
-        email: credentials.email,
-        role: isAdminEmail ? 'admin' : 'user'
-      };
-      const mockToken = 'mock-token-' + Date.now();
-      
-      localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, mockToken);
-      localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(mockUser));
-      
-      dispatch({
-        type: 'LOGIN_SUCCESS',
-        payload: { user: mockUser, token: mockToken },
-      });
-      
-      return { success: true, user: mockUser };
+      // Do NOT mock success on API failure; surface proper error and prevent redirects
+      const message = errorHandler.handleApiError(error, 'login');
+      dispatch({ type: 'LOGIN_FAILURE', payload: message });
+      return { success: false, error: message };
     }
   };
 

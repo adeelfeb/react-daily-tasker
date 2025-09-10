@@ -16,9 +16,14 @@ const LoginPage = () => {
     }
   }, [isAuthenticated, isAdmin, isLoading, navigate]);
 
-  // Show loading or nothing while checking authentication
+  // Show loading animation while checking authentication
   if (isLoading) {
-    return null; // or a loading spinner
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   // If authenticated, don't render the login form (redirect will happen)

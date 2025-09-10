@@ -3,6 +3,8 @@ class ErrorHandler {
   constructor() {
     this.notifications = [];
     this.listeners = [];
+    // Clear any existing notifications on initialization to prevent duplicates on page reload
+    this.clearAll();
   }
 
   // Add a notification

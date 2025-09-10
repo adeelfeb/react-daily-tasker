@@ -102,8 +102,7 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
       };
 
       const result = await onSubmit(eventData);
-      const backendMessage = result?.message || (event ? 'Event updated successfully' : 'Event created successfully');
-      errorHandler.success(backendMessage, 4500);
+      // Success notification is handled by the parent component
       // Ensure the notification is enqueued and rendered before closing
       await new Promise((resolve) => {
         if (typeof requestAnimationFrame === 'function') {
@@ -158,7 +157,7 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
     if (onDelete && event) {
       try {
         await onDelete(event.id || event._id);
-        errorHandler.success('Event deleted successfully');
+        // Success notification is handled by the parent component
         onClose();
       } catch (error) {
         // Handle different types of errors with specific messages
