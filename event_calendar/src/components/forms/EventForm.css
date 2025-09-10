@@ -89,33 +89,28 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 600;
-  color: #ffffff;
+  color: #717171 !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   letter-spacing: 0.025em;
-  transition: all 0.2s ease;
-}
-
-.form-group label:hover {
-  color: #f7fafc;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 0.6rem 0.75rem;
-  background: #1a1d29;
-  color: #ffffff;
-  border: 1px solid #2d3748;
+  padding: 0.75rem;
+  background: #0f1419 !important;
+  color: #ffffff !important;
+  border: 1px solid #1a202c !important;
   border-radius: 6px;
   font-size: 0.95rem;
+  line-height: 1.4;
   transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
-  color: #a0aec0;
+  color: #ffffff;
   opacity: 1;
 }
 
@@ -125,16 +120,16 @@
   outline: none;
   border-color: var(--color-accent);
   box-shadow: 0 0 0 2px rgba(110, 168, 254, 0.4), 0 2px 8px rgba(110, 168, 254, 0.2);
-  background-color: #2d3748;
-  color: #ffffff;
+  background-color: #1a202c !important;
+  color: #ffffff !important;
 }
 
 .form-group input.error,
 .form-group select.error,
 .form-group textarea.error {
   border-color: #dc3545;
-  background-color: #1a1d29;
-  color: #ffffff;
+  background-color: #0f1419 !important;
+  color: #ffffff !important;
 }
 
 .error-message {
@@ -163,7 +158,7 @@
   cursor: pointer;
   font-weight: 600;
   margin-bottom: 0;
-  color: #ffffff;
+  color: #ffffff !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   letter-spacing: 0.025em;
 }
