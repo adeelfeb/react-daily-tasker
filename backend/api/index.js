@@ -12,17 +12,25 @@ import authRoutes from '../routes/auth.js';
 import eventRoutes from '../routes/events.js';
 import userRoutes from '../routes/users.js';
 
-// Load environment variables
-dotenv.config();
+// Load environment variables (only in development)
+if (process.env.NODE_ENV !== 'production') {
+  dotenv.config();
+}
 
 // Connect to database (with error handling for serverless)
-connectDB().catch(err => {
-  // Don't log errors in production to avoid exposing sensitive info
+if (process.env.MONGODB_URI) {
+  connectDB().catch(err => {
+    // Don't log errors in production to avoid exposing sensitive info
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('Failed to connect to database:', err);
+    }
+    // Don't exit in serverless environment
+  });
+} else {
   if (process.env.NODE_ENV !== 'production') {
-    console.error('Failed to connect to database:', err);
+    console.warn('MONGODB_URI not found, database connection skipped');
   }
-  // Don't exit in serverless environment
-});
+}
 
 const app = express();
 
@@ -79,10 +87,35 @@ app.use(cors({
   },
   credentials: true,
   optionsSuccessStatus: 200, // Some legacy browsers choke on 204
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposedHeaders: ['Content-Range', 'X-Content-Range']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'],
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization', 
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'Access-Control-Request-Method',
+    'Access-Control-Request-Headers'
+  ],
+  exposedHeaders: [
+    'Content-Range', 
+    'X-Content-Range',
+    'Access-Control-Allow-Origin',
+    'Access-Control-Allow-Credentials'
+  ],
+  preflightContinue: false,
+  maxAge: 86400 // Cache preflight for 24 hours
 }));
+
+// Handle preflight OPTIONS requests
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Max-Age', '86400');
+  res.sendStatus(200);
+});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -151,6 +184,29 @@ app.get('/api/cors-test', (req, res) => {
     success: true,
     message: 'CORS is working',
     origin: req.headers.origin || 'No origin header',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Environment debug endpoint (development only)
+app.get('/api/debug', (req, res) => {
+  if (process.env.NODE_ENV === 'production') {
+    return res.status(404).json({ message: 'Not found' });
+  }
+  
+  res.json({
+    success: true,
+    environment: {
+      NODE_ENV: process.env.NODE_ENV,
+      VERCEL: process.env.VERCEL,
+      MONGODB_URI: process.env.MONGODB_URI ? 'Set' : 'Not set',
+      FRONTEND_URL: process.env.FRONTEND_URL || 'Not set',
+      JWT_SECRET: process.env.JWT_SECRET ? 'Set' : 'Not set'
+    },
+    database: {
+      readyState: mongoose.connection.readyState,
+      host: mongoose.connection.host || 'Not connected'
+    },
     timestamp: new Date().toISOString()
   });
 });
