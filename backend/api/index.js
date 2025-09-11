@@ -17,13 +17,11 @@ if (process.env.NODE_ENV !== "production") {
   dotenv.config();
 }
 
-
-// Connect to database (with error handling for serverless)
+// Connect to database on startup (for local development)
 if (process.env.MONGODB_URI) {
   connectDB().catch(err => {
-    // Don't log errors in production to avoid exposing sensitive info
     if (process.env.NODE_ENV !== "production") {
-      console.error("Failed to connect to database:", err);
+      console.error("Failed to connect to database:", err.message);
     }
     // Don't exit in serverless environment
   });
@@ -167,7 +165,7 @@ app.use(session({
   rolling: true, // Reset expiration on activity
 }));
 
-// Database connection check middleware - optimized for serverless
+// Database connection check middleware - applied globally
 const checkDatabaseConnection = async (req, res, next) => {
   // Skip database check for public endpoints
   if (req.path === "/api/events/public" || req.path === "/api/test" || req.path === "/api/cors-test") {
@@ -175,14 +173,11 @@ const checkDatabaseConnection = async (req, res, next) => {
   }
   
   try {
-    // Connect to database using cached connection
     await connectDB();
     next();
   } catch (error) {
-    if (process.env.NODE_ENV !== "production") {
-      console.error("Database connection error:", error.message);
-    }
-    return res.status(503).json({
+    console.error("Database connection error:", error.message);
+    res.status(503).json({
       success: false,
       message: "Database connection not available. Please try again later."
     });
@@ -199,10 +194,13 @@ app.get("/api/events/public", (req, res) => {
   });
 });
 
+// Apply database connection middleware globally
+app.use(checkDatabaseConnection);
+
 // Routes
-app.use("/api/auth", checkDatabaseConnection, authRoutes);
-app.use("/api/events", checkDatabaseConnection, eventRoutes);
-app.use("/api/users", checkDatabaseConnection, userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/events", eventRoutes);
+app.use("/api/users", userRoutes);
 
 // Health check endpoint
 app.get("/api/health", async (req, res) => {
