@@ -5,7 +5,7 @@ import session from "express-session";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import { errorHandler, notFound } from "../middleware/errorHandler.js";
-import connectDB from "../config/database.js";
+import connectDB from "../config/connectDB.js";
 
 // Import routes
 import authRoutes from "../routes/auth.js";
@@ -15,6 +15,22 @@ import userRoutes from "../routes/users.js";
 // Load environment variables (only in development)
 if (process.env.NODE_ENV !== "production") {
   dotenv.config();
+}
+
+
+// Connect to database (with error handling for serverless)
+if (process.env.MONGODB_URI) {
+  connectDB().catch(err => {
+    // Don't log errors in production to avoid exposing sensitive info
+    if (process.env.NODE_ENV !== "production") {
+      console.error("Failed to connect to database:", err);
+    }
+    // Don't exit in serverless environment
+  });
+} else {
+  if (process.env.NODE_ENV !== "production") {
+    console.warn("MONGODB_URI not found, database connection skipped");
+  }
 }
 
 const app = express();
@@ -151,7 +167,7 @@ app.use(session({
   rolling: true, // Reset expiration on activity
 }));
 
-// Database connection check middleware - serverless optimized
+// Database connection check middleware - optimized for serverless
 const checkDatabaseConnection = async (req, res, next) => {
   // Skip database check for public endpoints
   if (req.path === "/api/events/public" || req.path === "/api/test" || req.path === "/api/cors-test") {
