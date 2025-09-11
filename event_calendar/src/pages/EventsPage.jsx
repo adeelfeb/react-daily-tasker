@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { eventsAPI } from '../services/api';
+import { STORAGE_KEYS } from '../constants';
 import SimpleMonthCalendar from '../components/common/SimpleMonthCalendar';
 import './CalendarPage.css';
 
@@ -14,8 +15,9 @@ const EventsPage = () => {
     const load = async () => {
       try {
         setLoading(true);
-        const res = await eventsAPI.getPublicEvents();
-        const apiEvents = res?.data?.data || [];
+        const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+        const res = token ? await eventsAPI.getEvents() : await eventsAPI.getPublicEvents();
+        const apiEvents = res?.data?.data || res?.data?.events || [];
         const normalized = apiEvents.map((e) => ({
           id: e.id || e._id,
           title: e.title,
@@ -71,7 +73,7 @@ const EventsPage = () => {
         ) : error ? (
           <div className="error-message">{error}</div>
         ) : (
-          <SimpleMonthCalendar events={events} onEventClick={() => {}} />
+          <SimpleMonthCalendar events={events} />
         )}
       </div>
     </div>

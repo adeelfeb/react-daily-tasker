@@ -24,7 +24,7 @@ const Home = () => {
       try {
         setLoading(true);
         const res = await eventsAPI.getPublicEvents();
-        const apiEvents = res?.data?.data || [];
+        const apiEvents = res?.data?.data || res?.data?.events || [];
         const normalized = apiEvents.map((e) => ({
           id: e.id || e._id,
           title: e.title,
@@ -146,7 +146,7 @@ const Home = () => {
             <div className="error-message">{error}</div>
           ) : (
             <div className="calendar-container">
-              <SimpleMonthCalendar events={events} onEventClick={() => {}} />
+              <SimpleMonthCalendar events={events} />
             </div>
           )}
         </div>

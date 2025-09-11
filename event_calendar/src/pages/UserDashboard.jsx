@@ -19,7 +19,18 @@ const UserDashboard = () => {
     try {
       setLoading(true);
       const response = await eventsAPI.getEvents();
-      setEvents(response.data.events || []);
+      const apiEvents = response?.data?.data || response?.data?.events || [];
+      const normalized = apiEvents.map((e) => ({
+        id: e.id || e._id,
+        title: e.title,
+        description: e.description,
+        start: e.start ? new Date(e.start) : null,
+        end: e.end ? new Date(e.end) : null,
+        type: e.type,
+        location: e.location,
+        allDay: Boolean(e.allDay),
+      }));
+      setEvents(normalized);
       setError(null);
     } catch (err) {
       const errorMessage = errorHandler.handleApiError(err, 'fetching events');
