@@ -17,7 +17,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 1rem;
 }
 
@@ -37,11 +37,16 @@
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  flex-wrap: nowrap;
 }
 
 /* Button sizing for admin dashboard */
 .admin-dashboard .header-actions .btn {
-  padding: 0.75rem 1.25rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  width: auto;
+  min-width: auto;
+  flex-shrink: 0;
 }
 
 .admin-dashboard .toolbar-left .btn {
@@ -489,9 +494,10 @@
   }
   
   .header-content {
-    flex-direction: column;
-    text-align: center;
+    flex-direction: row;
+    text-align: left;
     gap: 0.5rem;
+    flex-wrap: wrap;
   }
   
   .dashboard-title h1 {
@@ -499,7 +505,13 @@
   }
   
   .header-actions {
-    justify-content: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+  }
+  
+  .admin-dashboard .header-actions .btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
   }
   
   .dashboard-toolbar {
@@ -671,6 +683,11 @@
     font-size: 1.1rem;
   }
   
+  .admin-dashboard .header-actions .btn {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+  }
+  
   .toolbar-left .btn {
     padding: 0.3rem 0.5rem;
     font-size: 0.75rem;
@@ -724,6 +741,11 @@
 @media (max-width: 360px) {
   .dashboard-title h1 {
     font-size: 1rem;
+  }
+  
+  .admin-dashboard .header-actions .btn {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
   }
   
   .toolbar-left .btn {
