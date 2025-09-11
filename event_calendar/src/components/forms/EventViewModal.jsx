@@ -24,6 +24,32 @@ const EventViewModal = ({ event, onClose }) => {
     });
   };
 
+  const formatDate = (date) => {
+    if (!date) return '';
+    return date.toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
+
+  const calculateDuration = (start, end) => {
+    if (!start || !end) return '';
+    const startTime = new Date(start);
+    const endTime = new Date(end);
+    const diffMs = endTime - startTime;
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    
+    if (diffHours === 0) {
+      return `${diffMinutes} minutes`;
+    } else if (diffMinutes === 0) {
+      return `${diffHours} hour${diffHours > 1 ? 's' : ''}`;
+    } else {
+      return `${diffHours}h ${diffMinutes}m`;
+    }
+  };
+
   const getEventTypeLabel = (type) => {
     const typeMap = {
       [EVENT_TYPES.MEETING]: 'Meeting',
@@ -47,49 +73,59 @@ const EventViewModal = ({ event, onClose }) => {
         </div>
         
         <div className="event-view-modal-content">
-          <div className="event-detail-item">
+          <div className="event-detail-item full-width">
             <label>Title:</label>
             <div className="event-detail-value">{formattedEvent.title}</div>
           </div>
 
-          <div className="event-detail-item">
-            <label>Type:</label>
-            <div className="event-detail-value">
-              <span className={`event-type-badge event-type-${formattedEvent.type}`}>
-                {getEventTypeLabel(formattedEvent.type)}
-              </span>
+          <div className="event-details-grid">
+            <div className="event-detail-item">
+              <label>Type:</label>
+              <div className="event-detail-value">
+                <span className={`event-type-badge event-type-${formattedEvent.type}`}>
+                  {getEventTypeLabel(formattedEvent.type)}
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div className="event-detail-item">
-            <label>Date & Time:</label>
-            <div className="event-detail-value">
-              {formattedEvent.allDay ? (
-                'All Day Event'
-              ) : (
-                `${formatTime(formattedEvent.start)} - ${formatTime(formattedEvent.end)}`
-              )}
+            <div className="event-detail-item">
+              <label>Date:</label>
+              <div className="event-detail-value">{formatDate(formattedEvent.start)}</div>
             </div>
-          </div>
 
-          {formattedEvent.city && (
+            <div className="event-detail-item">
+              <label>Time:</label>
+              <div className="event-detail-value">
+                {formattedEvent.allDay ? (
+                  'All Day Event'
+                ) : (
+                  `${formatTime(formattedEvent.start)} - ${formatTime(formattedEvent.end)}`
+                )}
+              </div>
+            </div>
+
+            {!formattedEvent.allDay && (
+              <div className="event-detail-item">
+                <label>Duration:</label>
+                <div className="event-detail-value">{calculateDuration(formattedEvent.start, formattedEvent.end)}</div>
+              </div>
+            )}
+
             <div className="event-detail-item">
               <label>City:</label>
-              <div className="event-detail-value">🏙️ {formattedEvent.city}</div>
+              <div className="event-detail-value">{formattedEvent.city || 'Not specified'}</div>
             </div>
-          )}
 
-          {formattedEvent.location && (
             <div className="event-detail-item">
               <label>Location:</label>
-              <div className="event-detail-value">📍 {formattedEvent.location}</div>
+              <div className="event-detail-value">{formattedEvent.location || 'Not specified'}</div>
             </div>
-          )}
+          </div>
 
           {formattedEvent.description && (
-            <div className="event-detail-item">
+            <div className="event-detail-item full-width">
               <label>Description:</label>
-              <div className="event-detail-value">{formattedEvent.description}</div>
+              <div className="event-detail-value description-text">{formattedEvent.description}</div>
             </div>
           )}
         </div>

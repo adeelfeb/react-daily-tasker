@@ -62,8 +62,19 @@
   flex: 1;
 }
 
+.event-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
 .event-detail-item {
   margin-bottom: 1rem;
+}
+
+.event-detail-item.full-width {
+  grid-column: 1 / -1;
 }
 
 .event-detail-item label {
@@ -81,6 +92,15 @@
   overflow-wrap: break-word;
   hyphens: auto;
   line-height: 1.4;
+}
+
+.event-detail-value.description-text {
+  background: var(--color-surface-2);
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  white-space: pre-wrap;
+  line-height: 1.5;
 }
 
 .event-type-badge {
@@ -161,7 +181,40 @@
     font-size: 1.1rem;
   }
   
+  .event-details-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .event-detail-item {
+    margin-bottom: 0.75rem;
+  }
+  
   .event-detail-value {
     font-size: 0.95rem;
+  }
+  
+  .event-detail-value.description-text {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .event-details-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .event-detail-item {
+    margin-bottom: 0.5rem;
+  }
+  
+  .event-detail-item label {
+    font-size: 0.85rem;
+  }
+  
+  .event-detail-value {
+    font-size: 0.9rem;
   }
 }

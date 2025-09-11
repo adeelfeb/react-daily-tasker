@@ -17,8 +17,8 @@ const EventsPage = () => {
     const load = async () => {
       try {
         setLoading(true);
-        const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
-        const res = token ? await eventsAPI.getEvents() : await eventsAPI.getPublicEvents();
+        // Always fetch public events irrespective of auth state
+        const res = await eventsAPI.getPublicEvents();
         const apiEvents = res?.data?.data || res?.data?.events || [];
         const normalized = apiEvents.map((e) => ({
           id: e.id || e._id,

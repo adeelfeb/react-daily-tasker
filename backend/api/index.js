@@ -167,11 +167,11 @@ app.use(session({
 
 // Database connection check middleware - applied globally
 const checkDatabaseConnection = async (req, res, next) => {
-  // Skip database check for public endpoints
-  if (req.path === "/api/events/public" || req.path === "/api/test" || req.path === "/api/cors-test") {
+  // Skip database check only for true no-DB endpoints
+  if (req.path === "/api/test" || req.path === "/api/cors-test") {
     return next();
   }
-  
+
   try {
     await connectDB();
     next();
@@ -183,16 +183,6 @@ const checkDatabaseConnection = async (req, res, next) => {
     });
   }
 };
-
-// Public events endpoint (no database required)
-app.get("/api/events/public", (req, res) => {
-  res.json({
-    success: true,
-    message: "Public events endpoint - database connection required for full functionality",
-    data: [],
-    count: 0
-  });
-});
 
 // Apply database connection middleware globally
 app.use(checkDatabaseConnection);
