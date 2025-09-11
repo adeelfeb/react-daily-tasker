@@ -356,6 +356,15 @@
   min-width: 180px;
   transition: all 0.2s ease;
   cursor: pointer;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+/* Ensure dropdown opens below */
+.city-filter select option {
+  padding: 0.3rem 0.5rem;
+  font-size: 0.8rem;
+  line-height: 1.1;
 }
 
 .city-filter select:hover {
