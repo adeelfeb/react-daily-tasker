@@ -16,9 +16,6 @@ async function connectDB() {
   }
 
   if (cached.conn) {
-    if (process.env.NODE_ENV !== "production") {
-      console.log("MongoDB already connected (cached)");
-    }
     return cached.conn;
   }
 
