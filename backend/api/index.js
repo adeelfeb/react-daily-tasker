@@ -240,7 +240,8 @@ app.get("/", (req, res) => {
       message: "Event Calendar API",
       version: "1.0.0",
       status: "running",
-      databaseURI: process.env.MONGODB_URI
+      databaseURI: process.env.MONGODB_URI,
+      FRONTEND_URL: process.env.FRONTEND_URL
     });
   } catch (error) {
     res.status(200).json({
