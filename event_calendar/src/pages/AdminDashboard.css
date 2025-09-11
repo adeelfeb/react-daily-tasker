@@ -524,26 +524,28 @@
   }
   
   .dashboard-toolbar {
-    padding: 0.25rem 0;
+    padding: 0.5rem 0;
   }
   
   .toolbar-row {
-    flex-direction: row;
-    gap: 0.5rem;
-    align-items: center;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+    flex-wrap: nowrap;
   }
   
   .toolbar-left {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    gap: 0.25rem;
-    flex: 1;
-    min-width: 0;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    width: 100%;
   }
   
   .toolbar-right {
+    display: flex;
     justify-content: center;
+    width: 100%;
   }
   
   .city-filter {
@@ -551,12 +553,28 @@
     align-items: center;
     text-align: center;
     gap: 0.5rem;
+    width: 100%;
   }
   
   .city-filter select {
     min-width: 120px;
     width: 100%;
-    max-width: 200px;
+    max-width: 250px;
+  }
+  
+  .selected-cities {
+    justify-content: center;
+    max-width: 100%;
+  }
+  
+  .city-tag {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.4rem;
+  }
+  
+  .clear-filters {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.4rem;
   }
   
   .segmented {
@@ -697,11 +715,25 @@
     font-size: 0.8rem;
   }
   
+  .toolbar-row {
+    gap: 0.5rem;
+  }
+  
+  .toolbar-left {
+    gap: 0.25rem;
+  }
+  
   .toolbar-left .btn {
-    padding: 0.3rem 0.5rem;
+    padding: 0.4rem 0.6rem;
     font-size: 0.75rem;
     width: auto !important;
     min-width: auto !important;
+    flex: 1;
+    max-width: 120px;
+  }
+  
+  .city-filter select {
+    max-width: 200px;
   }
   
   .segmented button {
@@ -757,11 +789,25 @@
     font-size: 0.75rem;
   }
   
+  .toolbar-row {
+    gap: 0.4rem;
+  }
+  
+  .toolbar-left {
+    gap: 0.2rem;
+  }
+  
   .toolbar-left .btn {
-    padding: 0.25rem 0.4rem;
+    padding: 0.35rem 0.5rem;
     font-size: 0.7rem;
     width: auto !important;
     min-width: auto !important;
+    flex: 1;
+    max-width: 100px;
+  }
+  
+  .city-filter select {
+    max-width: 180px;
   }
   
   .segmented button {
