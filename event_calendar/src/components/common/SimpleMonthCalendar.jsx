@@ -120,8 +120,9 @@ const SimpleMonthCalendar = ({
               <div className="smc-date">{day.getDate()}</div>
               <div className="smc-events">
                 {dayEvents.slice(0, 3).map((ev) => (
-                  <div key={(ev.id || ev._id) + ''} className={`smc-event smc-${ev.type || 'event'}`} title={ev.title} onClick={(e) => { e.stopPropagation(); handleEventClick(ev); }}>
-                    {ev.title}
+                  <div key={(ev.id || ev._id) + ''} className={`smc-event smc-${ev.type || 'event'}`} title={`${ev.title}${ev.city ? ` - ${ev.city}` : ''}`} onClick={(e) => { e.stopPropagation(); handleEventClick(ev); }}>
+                    <div className="smc-event-title">{ev.title}</div>
+                    {ev.city && <div className="smc-event-city">📍 {ev.city}</div>}
                   </div>
                 ))}
                 {dayEvents.length > 3 && (

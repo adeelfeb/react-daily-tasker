@@ -159,6 +159,17 @@
   color: #ffffff;
 }
 
+.event-city {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+}
+
 .event-location {
   font-size: 0.8rem;
   color: var(--color-text-muted);

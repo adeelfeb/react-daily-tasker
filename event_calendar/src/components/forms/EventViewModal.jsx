@@ -8,37 +8,13 @@ const EventViewModal = ({ event, onClose }) => {
   useEffect(() => {
     if (event) {
       const formatted = {
-        title: event.title || '',
-        description: event.description || '',
+        ...event,
         start: event.start ? new Date(event.start) : null,
         end: event.end ? new Date(event.end) : null,
-        type: event.type || EVENT_TYPES.MEETING,
-        location: event.location || '',
-        allDay: Boolean(event.allDay),
       };
       setFormattedEvent(formatted);
     }
   }, [event]);
-
-  const formatDateTime = (date) => {
-    if (!date) return '';
-    return date.toLocaleString(undefined, {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  };
-
-  const formatDate = (date) => {
-    if (!date) return '';
-    return date.toLocaleDateString(undefined, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
 
   const formatTime = (date) => {
     if (!date) return '';
@@ -71,63 +47,23 @@ const EventViewModal = ({ event, onClose }) => {
         </div>
         
         <div className="event-view-modal-content">
-          <div className="event-view-field">
-            <label>Title</label>
-            <div className="event-view-value">{formattedEvent.title}</div>
+          <div className="event-detail-item">
+            <label>Title:</label>
+            <div className="event-detail-value">{formattedEvent.title}</div>
           </div>
 
-          <div className="event-view-row">
-            <div className="event-view-field">
-              <label>Start {formattedEvent.allDay ? 'Date' : 'Date & Time'}</label>
-              <div className="event-view-value">
-                {formattedEvent.allDay 
-                  ? formatDate(formattedEvent.start)
-                  : formatDateTime(formattedEvent.start)
-                }
-              </div>
-            </div>
-
-            <div className="event-view-field">
-              <label>End {formattedEvent.allDay ? 'Date' : 'Date & Time'}</label>
-              <div className="event-view-value">
-                {formattedEvent.allDay 
-                  ? formatDate(formattedEvent.end)
-                  : formatDateTime(formattedEvent.end)
-                }
-              </div>
+          <div className="event-detail-item">
+            <label>Type:</label>
+            <div className="event-detail-value">
+              <span className={`event-type-badge event-type-${formattedEvent.type}`}>
+                {getEventTypeLabel(formattedEvent.type)}
+              </span>
             </div>
           </div>
 
-          <div className="event-view-row">
-            <div className="event-view-field">
-              <label>Event Type</label>
-              <div className="event-view-value">
-                <span className={`event-type-badge event-type-${formattedEvent.type}`}>
-                  {getEventTypeLabel(formattedEvent.type)}
-                </span>
-              </div>
-            </div>
-
-            <div className="event-view-field">
-              <label>Location</label>
-              <div className="event-view-value">
-                {formattedEvent.location || 'No location specified'}
-              </div>
-            </div>
-          </div>
-
-          {formattedEvent.description && (
-            <div className="event-view-field">
-              <label>Description</label>
-              <div className="event-view-value event-description">
-                {formattedEvent.description}
-              </div>
-            </div>
-          )}
-
-          <div className="event-view-field">
-            <label>Duration</label>
-            <div className="event-view-value">
+          <div className="event-detail-item">
+            <label>Date & Time:</label>
+            <div className="event-detail-value">
               {formattedEvent.allDay ? (
                 'All Day Event'
               ) : (
@@ -135,6 +71,27 @@ const EventViewModal = ({ event, onClose }) => {
               )}
             </div>
           </div>
+
+          {formattedEvent.city && (
+            <div className="event-detail-item">
+              <label>City:</label>
+              <div className="event-detail-value">🏙️ {formattedEvent.city}</div>
+            </div>
+          )}
+
+          {formattedEvent.location && (
+            <div className="event-detail-item">
+              <label>Location:</label>
+              <div className="event-detail-value">📍 {formattedEvent.location}</div>
+            </div>
+          )}
+
+          {formattedEvent.description && (
+            <div className="event-detail-item">
+              <label>Description:</label>
+              <div className="event-detail-value">{formattedEvent.description}</div>
+            </div>
+          )}
         </div>
 
         <div className="event-view-modal-actions">

@@ -17,9 +17,9 @@
   border: 1px solid var(--color-border);
   border-radius: 12px;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  max-width: 600px;
+  max-width: 500px;
   width: 100%;
-  max-height: 90vh;
+  max-height: 80vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -36,7 +36,7 @@
 .event-view-modal-header h2 {
   margin: 0;
   color: var(--color-text);
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
 }
 
@@ -57,49 +57,36 @@
 }
 
 .event-view-modal-content {
-  padding: 1.5rem;
+  padding: 1rem 1.5rem;
   overflow-y: auto;
   flex: 1;
 }
 
-.event-view-field {
-  margin-bottom: 1.25rem;
+.event-detail-item {
+  margin-bottom: 1rem;
 }
 
-.event-view-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-}
-
-.event-view-field label {
+.event-detail-item label {
   display: block;
   font-weight: 600;
-  color: var(--color-text);
-  margin-bottom: 0.5rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.25rem;
   font-size: 0.9rem;
 }
 
-.event-view-value {
+.event-detail-value {
   color: var(--color-text);
-  padding: 0.75rem;
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
   line-height: 1.4;
-}
-
-.event-description {
-  min-height: 80px;
-  white-space: pre-wrap;
 }
 
 .event-type-badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
-  border-radius: 20px;
+  border-radius: 12px;
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -161,12 +148,7 @@
   }
   
   .event-view-modal-container {
-    max-height: 95vh;
-  }
-  
-  .event-view-row {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
+    max-height: 90vh;
   }
   
   .event-view-modal-header,
@@ -176,6 +158,10 @@
   }
   
   .event-view-modal-header h2 {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
+  }
+  
+  .event-detail-value {
+    font-size: 0.95rem;
   }
 }

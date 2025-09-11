@@ -96,6 +96,9 @@ const DayEventsModal = ({ date, events = [], onClose, onEventClick }) => {
                       <span className={`event-type-badge event-type-${event.type}`}>
                         {getEventTypeLabel(event.type)}
                       </span>
+                      {event.city && (
+                        <span className="event-city">🏙️ {event.city}</span>
+                      )}
                       {event.location && (
                         <span className="event-location">📍 {event.location}</span>
                       )}
