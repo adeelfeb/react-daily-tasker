@@ -50,7 +50,7 @@ app.get('/apple-touch-icon.png', (req, res) => {
 
 // Middleware
 // Allow multiple origins via comma-separated FRONTEND_URL env
-const allowedOrigins = ('https://calander-frontend.vercel.app' || process.env.FRONTEND_URL || 'https://calander-frontend.vercel.app')
+const allowedOrigins = (process.env.FRONTEND_URL || 'https://calander-frontend.vercel.app,https://calendar-frontend.vercel.app')
   .split(',')
   .map(o => o.trim())
   .filter(Boolean);
@@ -59,11 +59,29 @@ app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps, curl, favicon requests)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+    
+    // Log for debugging in development
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('CORS request from origin:', origin);
+      console.log('Allowed origins:', allowedOrigins);
+    }
+    
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    // Log rejected origins for debugging
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('CORS rejected origin:', origin);
+    }
+    
     return callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
-  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+  optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range']
 }));
 
 app.use(bodyParser.json());
@@ -123,6 +141,16 @@ app.get('/api/test', (req, res) => {
   res.json({
     success: true,
     message: 'API is working',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// CORS test endpoint
+app.get('/api/cors-test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'CORS is working',
+    origin: req.headers.origin || 'No origin header',
     timestamp: new Date().toISOString()
   });
 });
