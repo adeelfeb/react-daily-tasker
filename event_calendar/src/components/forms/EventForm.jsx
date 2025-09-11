@@ -19,14 +19,27 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+  // Helper function to format date for datetime-local input without timezone conversion
+  const formatDateForInput = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    // Use local timezone to avoid date shifting
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
   useEffect(() => {
     if (event) {
-      // Editing existing event
+      // Editing existing event - preserve original dates
       setFormData({
         title: event.title || '',
         description: event.description || '',
-        start: event.start ? new Date(event.start).toISOString().slice(0, 16) : '',
-        end: event.end ? new Date(event.end).toISOString().slice(0, 16) : '',
+        start: formatDateForInput(event.start),
+        end: formatDateForInput(event.end),
         type: event.type || EVENT_TYPES.MEETING,
         location: event.location || '',
         city: event.city || '',
