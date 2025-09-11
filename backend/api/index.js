@@ -239,7 +239,8 @@ app.get("/", (req, res) => {
       success: true,
       message: "Event Calendar API",
       version: "1.0.0",
-      status: "running"
+      status: "running",
+      databaseURI: process.env.MONGODB_URI
     });
   } catch (error) {
     res.status(200).json({
