@@ -291,7 +291,8 @@ app.get("/", (req, res) => {
       message: "Event Calendar API",
       version: "1.0.0",
       status: "running",
-      FRONTEND_URL: process.env.FRONTEND_URL
+      FRONTEND_URL: process.env.FRONTEND_URL,
+      updated: new Date().toISOString()
     });
   } catch (error) {
     res.status(200).json({
