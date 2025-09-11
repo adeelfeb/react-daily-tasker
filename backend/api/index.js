@@ -16,7 +16,7 @@ if (process.env.NODE_ENV !== "production") {
   dotenv.config();
 }
 
-// Database connection function
+// Database connection function - optimized for serverless environments
 const connectDB = async () => {
   try {
     // Check if already connected
@@ -27,12 +27,56 @@ const connectDB = async () => {
       return;
     }
 
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
+    // MongoDB connection options optimized for serverless environments
+    const options = {
       useNewUrlParser: true,
       useUnifiedTopology: true,
-      serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
+      
+      // Timeout configurations for serverless
+      serverSelectionTimeoutMS: 10000, // Increased to 10 seconds
       socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-    });
+      connectTimeoutMS: 10000, // Connection timeout
+      
+      // Connection pooling for serverless
+      maxPoolSize: 10, // Maintain up to 10 socket connections
+      minPoolSize: 0, // Minimum connections
+      maxIdleTimeMS: 30000, // Close connections after 30 seconds of inactivity
+      
+      // Serverless-specific options
+      bufferCommands: false, // Disable mongoose buffering
+      bufferMaxEntries: 0, // Disable mongoose buffering
+      
+      // MongoDB driver options for distributed environments
+      retryWrites: true, // Enable retryable writes
+      retryReads: true, // Enable retryable reads
+      
+      // Connection string options for multiple regions/instances
+      directConnection: false, // Allow connection through mongos
+      
+      // Compression for better performance
+      compressors: ["zlib"],
+      
+      // Heartbeat frequency
+      heartbeatFrequencyMS: 10000,
+      
+      // Server API version for better compatibility
+      serverApi: {
+        version: "1",
+        strict: true,
+        deprecationErrors: true,
+      },
+      
+      // Additional options for serverless reliability
+      maxStalenessSeconds: 90, // Read from secondary if primary is stale
+      readPreference: "primaryPreferred", // Prefer primary but allow secondary reads
+      
+      // TLS/SSL options (if needed)
+      tls: true,
+      tlsAllowInvalidCertificates: false,
+      tlsAllowInvalidHostnames: false,
+    };
+
+    const conn = await mongoose.connect(process.env.MONGODB_URI, options);
 
     if (process.env.NODE_ENV !== "production") {
       console.log(`MongoDB Connected: ${conn.connection.host}`);
@@ -178,7 +222,7 @@ app.options("*", (req, res) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Session configuration - simplified for serverless
+// Session configuration - optimized for cross-origin and serverless
 app.use(session({
   secret: process.env.SESSION_SECRET || "your-super-secret-session-key",
   resave: false,
@@ -186,24 +230,41 @@ app.use(session({
   // Use memory store for serverless (sessions won't persist across function invocations)
   // In production, consider using Redis or another external store
   cookie: {
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV === "production", // Use secure cookies in production
     httpOnly: true,
-    maxAge: 14 * 24 * 60 * 60 * 1000 // 14 days
-  }
+    maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Cross-site cookies for production
+    domain: process.env.NODE_ENV === "production" ? undefined : undefined, // Let browser handle domain
+  },
+  // Additional session options for serverless
+  name: "sessionId", // Custom session name
+  rolling: true, // Reset expiration on activity
 }));
 
-// Database connection check middleware
-const checkDatabaseConnection = (req, res, next) => {
+// Database connection check middleware - improved
+const checkDatabaseConnection = async (req, res, next) => {
   // Skip database check for public endpoints
   if (req.path === "/api/events/public" || req.path === "/api/test" || req.path === "/api/cors-test") {
     return next();
   }
   
+  // If not connected, try to reconnect
   if (mongoose.connection.readyState !== 1) {
-    return res.status(503).json({
-      success: false,
-      message: "Database connection not available. Please try again later."
-    });
+    try {
+      await connectDB();
+      // Check again after attempting to connect
+      if (mongoose.connection.readyState !== 1) {
+        return res.status(503).json({
+          success: false,
+          message: "Database connection not available. Please try again later."
+        });
+      }
+    } catch (error) {
+      return res.status(503).json({
+        success: false,
+        message: "Database connection not available. Please try again later."
+      });
+    }
   }
   next();
 };
@@ -292,7 +353,6 @@ app.get("/", (req, res) => {
       message: "Event Calendar API",
       version: "1.0.0",
       status: "running",
-      databaseURI: process.env.MONGODB_URI,
       FRONTEND_URL: process.env.FRONTEND_URL
     });
   } catch (error) {
