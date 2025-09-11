@@ -61,10 +61,6 @@ const EventsPage = () => {
 
       {/* Main Content */}
       <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
-        <h1 style={{ marginBottom: '1rem' }}>Community Events</h1>
-        <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.25rem' }}>
-          Browse upcoming public events.
-        </p>
         {loading ? (
           <div className="loading-container">
             <div className="loading-spinner"></div>
@@ -73,7 +69,12 @@ const EventsPage = () => {
         ) : error ? (
           <div className="error-message">{error}</div>
         ) : (
-          <SimpleMonthCalendar events={events} />
+          <>
+            <SimpleMonthCalendar events={events} />
+            <p style={{ color: 'var(--color-text-muted)', marginTop: '1.25rem' }}>
+              Browse upcoming public events.
+            </p>
+          </>
         )}
       </div>
     </div>
