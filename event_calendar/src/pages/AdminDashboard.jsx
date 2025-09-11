@@ -5,12 +5,14 @@ import Calendar from '../components/common/Calendar';
 import SimpleMonthCalendar from '../components/common/SimpleMonthCalendar';
 import EventForm from '../components/forms/EventForm';
 import ConfirmationModal from '../components/common/ConfirmationModal';
+import { UK_CITIES } from '../constants';
 import errorHandler from '../utils/errorHandler';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const { user, logout } = useAuth();
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showEventForm, setShowEventForm] = useState(false);
@@ -19,10 +21,23 @@ const AdminDashboard = () => {
   const [viewMode, setViewMode] = useState('calendar'); // 'calendar' or 'list'
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [eventToDelete, setEventToDelete] = useState(null);
+  const [selectedCities, setSelectedCities] = useState([]);
 
   useEffect(() => {
     fetchEvents();
   }, []);
+
+  // Filter events based on selected cities
+  useEffect(() => {
+    if (selectedCities.length === 0) {
+      setFilteredEvents(events);
+    } else {
+      const filtered = events.filter(event => 
+        event.city && selectedCities.includes(event.city)
+      );
+      setFilteredEvents(filtered);
+    }
+  }, [events, selectedCities]);
 
   const fetchEvents = async () => {
     try {
@@ -37,6 +52,7 @@ const AdminDashboard = () => {
         end: e.end ? new Date(e.end) : null,
         type: e.type,
         location: e.location,
+        city: e.city,
         allDay: Boolean(e.allDay),
         createdBy: e.createdBy?._id || e.createdBy,
         attendees: e.attendees || [],
@@ -118,6 +134,7 @@ const AdminDashboard = () => {
             end: updated.end ? new Date(updated.end) : null,
             type: updated.type,
             location: updated.location,
+            city: updated.city,
             allDay: Boolean(updated.allDay),
             createdBy: updated.createdBy?._id || updated.createdBy,
             attendees: updated.attendees || [],
@@ -145,6 +162,7 @@ const AdminDashboard = () => {
             end: created.end ? new Date(created.end) : null,
             type: created.type,
             location: created.location,
+            city: created.city,
             allDay: Boolean(created.allDay),
             createdBy: created.createdBy?._id || created.createdBy,
             attendees: created.attendees || [],
@@ -167,6 +185,20 @@ const AdminDashboard = () => {
       errorHandler.handleApiError(err, selectedEvent ? 'updating event' : 'creating event');
       throw err;
     }
+  };
+
+  const handleCityFilterChange = (city) => {
+    setSelectedCities(prev => {
+      if (prev.includes(city)) {
+        return prev.filter(c => c !== city);
+      } else {
+        return [...prev, city];
+      }
+    });
+  };
+
+  const clearCityFilters = () => {
+    setSelectedCities([]);
   };
 
   const handleLogout = () => {
@@ -227,7 +259,47 @@ const AdminDashboard = () => {
               </button>
             </div>
             <div className="toolbar-right">
-              {/* Calendar view toggle removed */}
+              <div className="city-filter">
+                <label htmlFor="city-filter-select">Filter by City:</label>
+                <select
+                  id="city-filter-select"
+                  value=""
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      handleCityFilterChange(e.target.value);
+                      e.target.value = '';
+                    }
+                  }}
+                >
+                  <option value="">Add city filter</option>
+                  {UK_CITIES.filter(city => !selectedCities.includes(city)).map(city => (
+                    <option key={city} value={city}>{city}</option>
+                  ))}
+                </select>
+                {selectedCities.length > 0 && (
+                  <div className="selected-cities">
+                    {selectedCities.map(city => (
+                      <span key={city} className="city-tag">
+                        {city}
+                        <button 
+                          type="button" 
+                          onClick={() => handleCityFilterChange(city)}
+                          className="remove-city"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                    <button 
+                      type="button" 
+                      onClick={clearCityFilters}
+                      className="clear-filters"
+                    >
+                      Clear All
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -248,7 +320,7 @@ const AdminDashboard = () => {
           {viewMode === 'calendar' ? (
             <div className="calendar-container">
               <SimpleMonthCalendar
-                events={events}
+                events={filteredEvents}
                 onEventClick={handleEditEvent}
                 onDateClick={(date) => {
                   // Prefill a 1-hour slot for new event creation
@@ -267,7 +339,7 @@ const AdminDashboard = () => {
             <div className="events-list">
               <h2>All Events</h2>
               <div className="events-grid">
-                {events.map(event => (
+                {filteredEvents.map(event => (
                   <div key={event.id} className="event-card">
                     <div className="event-header">
                       <h3>{event.title}</h3>
@@ -313,7 +385,7 @@ const AdminDashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {events
+                      {filteredEvents
                         .filter(ev => {
                           const now = new Date();
                           const in7 = new Date();
@@ -343,7 +415,7 @@ const AdminDashboard = () => {
                             </td>
                           </tr>
                         ))}
-                      {events.filter(ev => {
+                      {filteredEvents.filter(ev => {
                         const now = new Date();
                         const in7 = new Date();
                         in7.setDate(in7.getDate() + 7);

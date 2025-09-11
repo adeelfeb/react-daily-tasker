@@ -36,6 +36,11 @@ const eventSchema = new mongoose.Schema({
     trim: true,
     maxlength: [100, 'Location cannot be more than 100 characters']
   },
+  city: {
+    type: String,
+    trim: true,
+    maxlength: [50, 'City cannot be more than 50 characters']
+  },
   allDay: {
     type: Boolean,
     default: false
@@ -82,6 +87,7 @@ const eventSchema = new mongoose.Schema({
 eventSchema.index({ start: 1, end: 1 });
 eventSchema.index({ createdBy: 1 });
 eventSchema.index({ type: 1 });
+eventSchema.index({ city: 1 });
 
 // Virtual for event duration
 eventSchema.virtual('duration').get(function() {

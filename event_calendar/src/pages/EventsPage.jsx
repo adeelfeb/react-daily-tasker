@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { eventsAPI } from '../services/api';
-import { STORAGE_KEYS } from '../constants';
+import { STORAGE_KEYS, UK_CITIES } from '../constants';
 import SimpleMonthCalendar from '../components/common/SimpleMonthCalendar';
 import './CalendarPage.css';
 
 const EventsPage = () => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedCities, setSelectedCities] = useState([]);
 
   useEffect(() => {
     const load = async () => {
@@ -26,6 +28,7 @@ const EventsPage = () => {
           end: e.end ? new Date(e.end) : null,
           type: e.type,
           location: e.location,
+          city: e.city,
           allDay: Boolean(e.allDay),
         }));
         setEvents(normalized);
@@ -39,6 +42,32 @@ const EventsPage = () => {
     load();
   }, []);
 
+  // Filter events based on selected cities
+  useEffect(() => {
+    if (selectedCities.length === 0) {
+      setFilteredEvents(events);
+    } else {
+      const filtered = events.filter(event => 
+        event.city && selectedCities.includes(event.city)
+      );
+      setFilteredEvents(filtered);
+    }
+  }, [events, selectedCities]);
+
+  const handleCityFilterChange = (city) => {
+    setSelectedCities(prev => {
+      if (prev.includes(city)) {
+        return prev.filter(c => c !== city);
+      } else {
+        return [...prev, city];
+      }
+    });
+  };
+
+  const clearCityFilters = () => {
+    setSelectedCities([]);
+  };
+
   return (
     <div className="events-page">
       {/* Header */}
@@ -51,6 +80,47 @@ const EventsPage = () => {
               </h1>
             </div>
             <nav className="header-nav">
+              <div className="city-filter">
+                <label htmlFor="city-filter-select">Filter by City:</label>
+                <select
+                  id="city-filter-select"
+                  value=""
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      handleCityFilterChange(e.target.value);
+                      e.target.value = '';
+                    }
+                  }}
+                >
+                  <option value="">Add city filter</option>
+                  {UK_CITIES.filter(city => !selectedCities.includes(city)).map(city => (
+                    <option key={city} value={city}>{city}</option>
+                  ))}
+                </select>
+                {selectedCities.length > 0 && (
+                  <div className="selected-cities">
+                    {selectedCities.map(city => (
+                      <span key={city} className="city-tag">
+                        {city}
+                        <button 
+                          type="button" 
+                          onClick={() => handleCityFilterChange(city)}
+                          className="remove-city"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                    <button 
+                      type="button" 
+                      onClick={clearCityFilters}
+                      className="clear-filters"
+                    >
+                      Clear All
+                    </button>
+                  </div>
+                )}
+              </div>
               <button className="btn btn-primary" onClick={() => navigate('/login')}>
                 Add Event
               </button>
@@ -70,7 +140,7 @@ const EventsPage = () => {
           <div className="error-message">{error}</div>
         ) : (
           <>
-            <SimpleMonthCalendar events={events} />
+            <SimpleMonthCalendar events={filteredEvents} />
             <p style={{ color: 'var(--color-text-muted)', marginTop: '1.25rem' }}>
               Browse upcoming public events.
             </p>

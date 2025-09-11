@@ -39,9 +39,23 @@
   align-items: center;
 }
 
-/* Increase button padding in admin dashboard primary areas */
-.admin-dashboard .header-actions .btn,
-.admin-dashboard .toolbar-left .btn,
+/* Button sizing for admin dashboard */
+.admin-dashboard .header-actions .btn {
+  padding: 0.75rem 1.25rem;
+}
+
+.admin-dashboard .toolbar-left .btn {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  min-width: auto;
+  width: auto;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
 .admin-dashboard .event-actions .btn {
   padding: 0.75rem 1.25rem;
 }
@@ -277,11 +291,128 @@
   position: sticky;
   top: 60px; /* Adjust based on header height */
   z-index: 99;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
-.toolbar-row { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; }
-.toolbar-left { display: flex; gap: 0.5rem; align-items: center; flex-wrap: nowrap; }
-.toolbar-left .btn { white-space: nowrap; }
-.toolbar-right { display: flex; align-items: center; gap: 0.5rem; }
+.toolbar-row { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  padding: 0.5rem 0; 
+  flex-wrap: nowrap;
+}
+.toolbar-left { 
+  display: flex; 
+  gap: 0.5rem; 
+  align-items: center; 
+  flex-wrap: nowrap; 
+  flex-shrink: 0;
+}
+.toolbar-left .btn { 
+  white-space: nowrap; 
+  flex-shrink: 0;
+  margin: 0;
+  width: auto !important;
+  min-width: auto !important;
+  max-width: none !important;
+}
+.toolbar-right { 
+  display: flex; 
+  align-items: center; 
+  gap: 0.5rem; 
+  flex-shrink: 0;
+}
+
+/* City Filter Styles */
+.city-filter {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.city-filter label {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  font-weight: 600;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.city-filter select {
+  padding: 0.5rem 0.75rem;
+  border: 2px solid var(--color-border);
+  border-radius: 8px;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-weight: 500;
+  min-width: 180px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.city-filter select:hover {
+  border-color: var(--color-accent);
+  box-shadow: 0 2px 4px rgba(212, 175, 55, 0.1);
+}
+
+.city-filter select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+}
+
+.selected-cities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.city-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: var(--color-accent);
+  color: #0b0e14;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.remove-city {
+  background: none;
+  border: none;
+  color: #0b0e14;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 0;
+  margin-left: 0.25rem;
+  line-height: 1;
+}
+
+.remove-city:hover {
+  color: #dc3545;
+}
+
+.clear-filters {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.clear-filters:hover {
+  background-color: #c82333;
+}
 
 /* Segmented control to switch between Month (Simple) and Advanced calendar */
 .segmented {
@@ -376,19 +507,35 @@
   }
   
   .toolbar-row {
-    flex-direction: column;
+    flex-direction: row;
     gap: 0.5rem;
-    align-items: stretch;
+    align-items: center;
+    flex-wrap: wrap;
   }
   
   .toolbar-left {
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
     gap: 0.25rem;
+    flex: 1;
+    min-width: 0;
   }
   
   .toolbar-right {
     justify-content: center;
+  }
+  
+  .city-filter {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  .city-filter select {
+    min-width: 120px;
+    width: 100%;
+    max-width: 200px;
   }
   
   .segmented {
@@ -527,6 +674,8 @@
   .toolbar-left .btn {
     padding: 0.3rem 0.5rem;
     font-size: 0.75rem;
+    width: auto !important;
+    min-width: auto !important;
   }
   
   .segmented button {
@@ -580,6 +729,8 @@
   .toolbar-left .btn {
     padding: 0.25rem 0.4rem;
     font-size: 0.7rem;
+    width: auto !important;
+    min-width: auto !important;
   }
   
   .segmented button {

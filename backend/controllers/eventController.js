@@ -5,7 +5,14 @@ import Event from '../models/Event.js';
 // @access  Public
 export const getPublicEvents = async (req, res) => {
   try {
-    const events = await Event.find({ isPublic: true })
+    const { city } = req.query;
+    let query = { isPublic: true };
+    
+    if (city) {
+      query.city = city;
+    }
+    
+    const events = await Event.find(query)
       .select('-attendees')
       .populate('createdBy', 'name')
       .sort({ start: 1 });
@@ -28,7 +35,7 @@ export const getPublicEvents = async (req, res) => {
 // @access  Private
 export const getEvents = async (req, res) => {
   try {
-    const { start, end, type, status } = req.query;
+    const { start, end, type, status, city } = req.query;
     const userId = req.user.id;
     const userRole = req.user.role;
 
@@ -61,6 +68,11 @@ export const getEvents = async (req, res) => {
     // Add status filter
     if (status) {
       query.status = status;
+    }
+
+    // Add city filter
+    if (city) {
+      query.city = city;
     }
 
     const events = await Event.find(query)
@@ -203,7 +215,7 @@ export const updateEvent = async (req, res) => {
 
     // Apply updates on the loaded document and save so validators run with proper context
     const updatableFields = [
-      'title', 'description', 'start', 'end', 'type', 'location',
+      'title', 'description', 'start', 'end', 'type', 'location', 'city',
       'allDay', 'attendees', 'isPublic', 'status', 'recurring'
     ];
     updatableFields.forEach((field) => {

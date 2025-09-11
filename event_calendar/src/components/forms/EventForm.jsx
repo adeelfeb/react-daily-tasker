@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import errorHandler from '../../utils/errorHandler';
-import { EVENT_TYPES } from '../../constants';
+import { EVENT_TYPES, UK_CITIES } from '../../constants';
 import ConfirmationModal from '../common/ConfirmationModal';
 import './EventForm.css';
 
@@ -12,6 +12,7 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
     end: '',
     type: EVENT_TYPES.MEETING,
     location: '',
+    city: '',
     allDay: false,
   });
   const [errors, setErrors] = useState({});
@@ -28,6 +29,7 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
         end: event.end ? new Date(event.end).toISOString().slice(0, 16) : '',
         type: event.type || EVENT_TYPES.MEETING,
         location: event.location || '',
+        city: event.city || '',
         allDay: event.allDay || false,
       });
     } else if (initialDates) {
@@ -143,6 +145,7 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
       end: '',
       type: EVENT_TYPES.MEETING,
       location: '',
+      city: '',
       allDay: false,
     });
     setErrors({});
@@ -258,6 +261,23 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
                 onChange={handleChange}
                 placeholder="Enter location"
               />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label htmlFor="city">City</label>
+              <select
+                id="city"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+              >
+                <option value="">Select a city</option>
+                {UK_CITIES.map(city => (
+                  <option key={city} value={city}>{city}</option>
+                ))}
+              </select>
             </div>
           </div>
 

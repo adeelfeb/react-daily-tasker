@@ -1,17 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useEvents } from '../context/EventsContext';
 import CalendarComponent from '../components/common/Calendar';
 import EventForm from '../components/forms/EventForm';
 import Layout from '../components/layout/Layout';
+import { UK_CITIES } from '../constants';
 import './CalendarPage.css';
 
 const CalendarPage = () => {
   const { isAdmin } = useAuth();
-  const { deleteEvent } = useEvents();
+  const { deleteEvent, events, fetchEvents } = useEvents();
   const [showEventForm, setShowEventForm] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [selectedCities, setSelectedCities] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
+
+  // Filter events based on selected cities
+  useEffect(() => {
+    if (selectedCities.length === 0) {
+      setFilteredEvents(events);
+    } else {
+      const filtered = events.filter(event => 
+        event.city && selectedCities.includes(event.city)
+      );
+      setFilteredEvents(filtered);
+    }
+  }, [events, selectedCities]);
 
   const handleSelectEvent = (event) => {
     setSelectedEvent(event);
@@ -62,27 +81,85 @@ const CalendarPage = () => {
     }
   };
 
+  const handleCityFilterChange = (city) => {
+    setSelectedCities(prev => {
+      if (prev.includes(city)) {
+        return prev.filter(c => c !== city);
+      } else {
+        return [...prev, city];
+      }
+    });
+  };
+
+  const clearCityFilters = () => {
+    setSelectedCities([]);
+  };
+
   return (
     <Layout>
       <div className="calendar-page">
         <div className="container">
           <div className="page-header">
             <h1>Event Calendar</h1>
-            {isAdmin() && (
-              <button
-                className="btn btn-primary"
-                onClick={() => {
-                  setSelectedEvent(null);
-                  setSelectedSlot(null);
-                  setShowEventForm(true);
-                }}
-              >
-                Add Event
-              </button>
-            )}
+            <div className="header-actions">
+              <div className="city-filter">
+                <label htmlFor="city-filter-select">Filter by City:</label>
+                <select
+                  id="city-filter-select"
+                  value=""
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      handleCityFilterChange(e.target.value);
+                      e.target.value = '';
+                    }
+                  }}
+                >
+                  <option value="">Add city filter</option>
+                  {UK_CITIES.filter(city => !selectedCities.includes(city)).map(city => (
+                    <option key={city} value={city}>{city}</option>
+                  ))}
+                </select>
+                {selectedCities.length > 0 && (
+                  <div className="selected-cities">
+                    {selectedCities.map(city => (
+                      <span key={city} className="city-tag">
+                        {city}
+                        <button 
+                          type="button" 
+                          onClick={() => handleCityFilterChange(city)}
+                          className="remove-city"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                    <button 
+                      type="button" 
+                      onClick={clearCityFilters}
+                      className="clear-filters"
+                    >
+                      Clear All
+                    </button>
+                  </div>
+                )}
+              </div>
+              {isAdmin() && (
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    setSelectedEvent(null);
+                    setSelectedSlot(null);
+                    setShowEventForm(true);
+                  }}
+                >
+                  Add Event
+                </button>
+              )}
+            </div>
           </div>
 
           <CalendarComponent
+            events={filteredEvents}
             onSelectEvent={handleSelectEvent}
             onSelectSlot={handleSelectSlot}
             onEventDrop={handleEventDrop}

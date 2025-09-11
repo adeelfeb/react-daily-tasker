@@ -2,18 +2,33 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { eventsAPI } from '../services/api';
 import SimpleCalendar from '../components/common/SimpleCalendar';
+import { UK_CITIES } from '../constants';
 import errorHandler from '../utils/errorHandler';
 import './UserDashboard.css';
 
 const UserDashboard = () => {
   const { user, logout } = useAuth();
   const [events, setEvents] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedCities, setSelectedCities] = useState([]);
 
   useEffect(() => {
     fetchEvents();
   }, []);
+
+  // Filter events based on selected cities
+  useEffect(() => {
+    if (selectedCities.length === 0) {
+      setFilteredEvents(events);
+    } else {
+      const filtered = events.filter(event => 
+        event.city && selectedCities.includes(event.city)
+      );
+      setFilteredEvents(filtered);
+    }
+  }, [events, selectedCities]);
 
   const fetchEvents = async () => {
     try {
@@ -28,6 +43,7 @@ const UserDashboard = () => {
         end: e.end ? new Date(e.end) : null,
         type: e.type,
         location: e.location,
+        city: e.city,
         allDay: Boolean(e.allDay),
       }));
       setEvents(normalized);
@@ -39,6 +55,20 @@ const UserDashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCityFilterChange = (city) => {
+    setSelectedCities(prev => {
+      if (prev.includes(city)) {
+        return prev.filter(c => c !== city);
+      } else {
+        return [...prev, city];
+      }
+    });
+  };
+
+  const clearCityFilters = () => {
+    setSelectedCities([]);
   };
 
   const handleLogout = () => {
@@ -65,6 +95,47 @@ const UserDashboard = () => {
               <p>Welcome back, {user?.name || 'User'}!</p>
             </div>
             <div className="header-actions">
+              <div className="city-filter">
+                <label htmlFor="city-filter-select">Filter by City:</label>
+                <select
+                  id="city-filter-select"
+                  value=""
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      handleCityFilterChange(e.target.value);
+                      e.target.value = '';
+                    }
+                  }}
+                >
+                  <option value="">Add city filter</option>
+                  {UK_CITIES.filter(city => !selectedCities.includes(city)).map(city => (
+                    <option key={city} value={city}>{city}</option>
+                  ))}
+                </select>
+                {selectedCities.length > 0 && (
+                  <div className="selected-cities">
+                    {selectedCities.map(city => (
+                      <span key={city} className="city-tag">
+                        {city}
+                        <button 
+                          type="button" 
+                          onClick={() => handleCityFilterChange(city)}
+                          className="remove-city"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                    <button 
+                      type="button" 
+                      onClick={clearCityFilters}
+                      className="clear-filters"
+                    >
+                      Clear All
+                    </button>
+                  </div>
+                )}
+              </div>
               <button className="btn btn-outline" onClick={handleLogout}>
                 Logout
               </button>
@@ -87,7 +158,7 @@ const UserDashboard = () => {
           
           <div className="calendar-container">
             <SimpleCalendar 
-              events={events}
+              events={filteredEvents}
               onEventClick={(event) => console.log('Event clicked:', event)}
               onDateClick={(date) => console.log('Date clicked:', date)}
             />
