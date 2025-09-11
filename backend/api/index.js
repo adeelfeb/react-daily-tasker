@@ -290,6 +290,7 @@ app.get("/", (req, res) => {
       version: "1.0.0",
       status: "running",
       FRONTEND_URL: process.env.FRONTEND_URL,
+      MONGODB_URI: process.env.MONGODB_URI,
       updated: new Date().toLocaleString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true })
     });
   } catch (error) {
