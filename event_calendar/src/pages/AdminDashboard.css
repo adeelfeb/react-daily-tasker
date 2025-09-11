@@ -39,6 +39,13 @@
   align-items: center;
 }
 
+/* Increase button padding in admin dashboard primary areas */
+.admin-dashboard .header-actions .btn,
+.admin-dashboard .toolbar-left .btn,
+.admin-dashboard .event-actions .btn {
+  padding: 0.75rem 1.25rem;
+}
+
 .dashboard-main { padding: 1rem 0; }
 
 .calendar-container {

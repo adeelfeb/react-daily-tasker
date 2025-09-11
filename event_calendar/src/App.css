@@ -13,14 +13,14 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  color: #666;
+  color: var(--color-text-muted);
 }
 
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #007bff;
+  border: 4px solid rgba(255,255,255,0.08);
+  border-top: 4px solid var(--color-accent);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -36,7 +36,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.6rem 1rem;
+  padding: 0.75rem 1.25rem;
   margin-bottom: 0;
   font-size: 0.95rem;
   font-weight: 500;
@@ -58,33 +58,33 @@
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #007bff;
-  border-color: #007bff;
+  color: #0b0e14;
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
 .btn-primary:hover:not(:disabled) {
-  color: #fff;
-  background-color: #0056b3;
-  border-color: #004085;
+  color: #0b0e14;
+  background-color: var(--color-accent-2);
+  border-color: var(--color-accent-2);
 }
 
 .btn-secondary {
   color: #fff;
-  background-color: #6c757d;
-  border-color: #6c757d;
+  background-color: #3f4757;
+  border-color: #3f4757;
 }
 
 .btn-secondary:hover:not(:disabled) {
   color: #fff;
-  background-color: #545b62;
-  border-color: #4e555b;
+  background-color: #505a6f;
+  border-color: #505a6f;
 }
 
 .btn-danger {
   color: #fff;
-  background-color: #dc3545;
-  border-color: #dc3545;
+  background-color: var(--color-danger);
+  border-color: var(--color-danger);
 }
 
 .btn-danger:hover:not(:disabled) {
@@ -102,7 +102,7 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
-  color: #333;
+  color: var(--color-text);
 }
 
 .form-group input,
@@ -114,10 +114,10 @@
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #495057;
-  background-color: #fff;
+  color: var(--color-text);
+  background-color: var(--color-surface);
   background-clip: padding-box;
-  border: 1px solid #ced4da;
+  border: 1px solid var(--color-border);
   border-radius: 0.375rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
@@ -125,11 +125,11 @@
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  color: #495057;
-  background-color: #fff;
-  border-color: #80bdff;
+  color: var(--color-text);
+  background-color: var(--color-surface-2);
+  border-color: var(--color-accent);
   outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.18);
 }
 
 .form-group input.error,

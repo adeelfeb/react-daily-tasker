@@ -1,18 +1,22 @@
 /* Global CSS Variables and Styles */
 :root {
-  /* Dark Theme Color Variables */
-  --color-bg: #0f1115;           /* app background */
-  --color-surface: #161a22;      /* cards, panels */
-  --color-surface-2: #1d2330;    /* secondary surfaces */
-  --color-border: #2a3142;       /* subtle borders */
-  --color-text: #e6eaf2;         /* primary text */
-  --color-text-muted: #aab2c5;   /* secondary text */
-  --color-accent: #6ea8fe;       /* accent (buttons/links) */
-  --color-accent-2: #8b5cf6;     /* secondary accent */
+  /* Light Theme Color Variables (gold accents) */
+  --color-bg: #ffffff;            /* app background */
+  --color-surface: #ffffff;       /* cards, panels */
+  --color-surface-2: #f5f7fb;     /* secondary surfaces */
+  --color-border: #e5e7eb;        /* subtle borders */
+  --color-text: #1f2937;          /* primary text */
+  --color-text-muted: #6b7280;    /* secondary text */
+  --color-accent: #d4af37;        /* gold accent */
+  --color-accent-2: #f1d168;      /* light gold accent */
+
+  /* Light gold surfaces */
+  --color-surface-gold: #fff8e1;   /* pale golden panel */
+  --color-surface-gold-2: #fff3c4; /* slightly deeper */
 
   /* Semantic */
-  --color-success: #22c55e;
-  --color-danger: #ef4444;
+  --color-success: #16a34a;
+  --color-danger: #dc2626;
 
   /* Typography */
   --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -69,13 +73,21 @@ h3 {
   text-align: center;
 }
 
+/* Ensure consistent default padding for buttons across pages */
+button.btn,
+a.btn,
+.btn:not(.btn-sm) {
+  padding: 0.85rem 1.25rem !important;
+}
+
 .btn-primary {
   background-color: var(--color-accent);
   color: #0b0e14;
 }
 
 .btn-primary:hover {
-  background-color: #5a96fc;
+  background-color: var(--color-accent-2);
+  color: #0b0e14;
   transform: translateY(-2px);
 }
 
@@ -99,7 +111,7 @@ a {
 }
 
 a:hover {
-  color: #5a96fc;
+  color: var(--color-accent-2);
 }
 
 /* Container */

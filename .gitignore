@@ -103,3 +103,7 @@ backend/config/database.js
 # Frontend specific
 event_calendar/dist/
 event_calendar/.env.local
+
+# Reference screenshots (do not track in git)
+referenceWebstie/
+referenceWebsite/

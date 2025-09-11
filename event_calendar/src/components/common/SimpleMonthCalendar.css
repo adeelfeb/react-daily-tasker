@@ -1,5 +1,5 @@
 .smc { 
-  background: var(--color-surface); 
+  background: var(--color-surface-gold-2); 
   border: 1px solid var(--color-border); 
   border-radius: 8px; 
   overflow: hidden; /* Prevent content from overflowing */
@@ -32,10 +32,10 @@
   width: 100%;
 }
 .smc-weekday { 
-  background: var(--color-surface); 
+  background: var(--color-surface-gold); 
   padding: 0.4rem; 
   text-align: center; 
-  color: var(--color-text-muted); 
+  color: #1f2937; 
   font-size: 0.8rem; 
   overflow: hidden;
   text-overflow: ellipsis;
@@ -51,7 +51,7 @@
 }
 .smc-cell { 
   min-height: 140px; 
-  background: var(--color-surface); 
+  background: var(--color-surface-gold-2); 
   padding: 0.6rem; 
   position: relative; 
   overflow: hidden; /* Prevent content from overflowing */
@@ -62,7 +62,7 @@
 }
 
 .smc-cell:hover {
-  background-color: var(--color-surface-2);
+  background-color: var(--color-surface-gold);
 }
 .smc-outside { opacity: 0.5; }
 .smc-today { outline: 2px solid var(--color-accent); outline-offset: -2px; }
@@ -71,7 +71,8 @@
   top: 6px; 
   right: 8px; 
   font-size: 0.8rem; 
-  color: var(--color-text-muted); 
+  color: #111827; 
+  font-weight: 700;
   z-index: 1;
 }
 .smc-events { 

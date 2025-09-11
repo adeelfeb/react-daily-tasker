@@ -54,6 +54,7 @@
   padding: 0 0 1rem 0;
   text-align: center;
   min-height: 40vh;
+  background: linear-gradient(180deg, var(--color-surface-gold) 0%, var(--color-surface-gold-2) 100%);
 }
 
 .hero-content {
