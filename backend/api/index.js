@@ -89,10 +89,60 @@ app.get("/apple-touch-icon.png", (req, res) => {
 
 // Middleware
 // CORS configuration - Allow all origins for testing
-app.use(cors({
-  origin: "*", // Allow all origins for testing
-  credentials: false, // Set to false when using wildcard origin
-  optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+// app.use(cors({
+//   origin: "*", // Allow all origins for testing
+//   credentials: false, // Set to false when using wildcard origin
+//   optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+//   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
+//   allowedHeaders: [
+//     "Content-Type", 
+//     "Authorization", 
+//     "X-Requested-With",
+//     "Accept",
+//     "Origin",
+//     "Access-Control-Request-Method",
+//     "Access-Control-Request-Headers"
+//   ],
+//   exposedHeaders: [
+//     "Content-Range", 
+//     "X-Content-Range",
+//     "Access-Control-Allow-Origin",
+//     "Access-Control-Allow-Credentials"
+//   ],
+//   preflightContinue: false,
+//   maxAge: 86400 // Cache preflight for 24 hours
+// }));
+
+// CORS configuration - Restrict to specific origins
+const allowedOrigins = [
+  "https://calander-frontend.vercel.app", // Your deployed frontend
+  /^http:\/\/localhost:\d+$/, // Localhost with any port
+  /^https:\/\/localhost:\d+$/, // HTTPS localhost with any port
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Check if origin is in allowed list
+    const isAllowed = allowedOrigins.some(allowedOrigin => {
+      if (typeof allowedOrigin === "string") {
+        return origin === allowedOrigin;
+      } else if (allowedOrigin instanceof RegExp) {
+        return allowedOrigin.test(origin);
+      }
+      return false;
+    });
+    
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true, // Allow credentials
+  optionsSuccessStatus: 200,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
   allowedHeaders: [
     "Content-Type", 
@@ -111,7 +161,9 @@ app.use(cors({
   ],
   preflightContinue: false,
   maxAge: 86400 // Cache preflight for 24 hours
-}));
+};
+
+app.use(cors(corsOptions));
 
 // Handle preflight OPTIONS requests
 app.options("*", (req, res) => {
