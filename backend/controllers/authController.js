@@ -1,10 +1,10 @@
-import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
 // Generate JWT token
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE || '7d',
+    expiresIn: process.env.JWT_EXPIRE || "7d",
   });
 };
 
@@ -20,7 +20,7 @@ export const register = async (req, res) => {
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: 'User already exists with this email'
+        message: "User already exists with this email"
       });
     }
 
@@ -39,7 +39,7 @@ export const register = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'User registered successfully',
+      message: "User registered successfully",
       data: {
         user: {
           id: user._id,
@@ -54,7 +54,7 @@ export const register = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Server error during registration'
+      message: "Server error during registration"
     });
   }
 };
@@ -71,7 +71,7 @@ export const login = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
+        message: "Invalid credentials"
       });
     }
 
@@ -79,7 +79,7 @@ export const login = async (req, res) => {
     if (!user.isActive) {
       return res.status(401).json({
         success: false,
-        message: 'Account is deactivated'
+        message: "Account is deactivated"
       });
     }
 
@@ -88,7 +88,7 @@ export const login = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid credentials'
+        message: "Invalid credentials"
       });
     }
 
@@ -100,7 +100,7 @@ export const login = async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Login successful',
+      message: "Login successful",
       data: {
         user: {
           id: user._id,
@@ -115,7 +115,7 @@ export const login = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Server error during login'
+      message: "Server error during login"
     });
   }
 };
@@ -143,7 +143,7 @@ export const getProfile = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Server error while fetching profile'
+      message: "Server error while fetching profile"
     });
   }
 };
@@ -166,7 +166,7 @@ export const updateProfile = async (req, res) => {
       if (existingUser) {
         return res.status(400).json({
           success: false,
-          message: 'Email is already taken by another user'
+          message: "Email is already taken by another user"
         });
       }
     }
@@ -179,7 +179,7 @@ export const updateProfile = async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Profile updated successfully',
+      message: "Profile updated successfully",
       data: {
         user: {
           id: user._id,
@@ -192,7 +192,7 @@ export const updateProfile = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Server error while updating profile'
+      message: "Server error while updating profile"
     });
   }
 };
@@ -207,7 +207,7 @@ export const forgotPassword = async (req, res) => {
     if (!email) {
       return res.status(400).json({
         success: false,
-        message: 'Email is required'
+        message: "Email is required"
       });
     }
 
@@ -216,7 +216,7 @@ export const forgotPassword = async (req, res) => {
       // Don't reveal if user exists or not for security
       return res.json({
         success: true,
-        message: 'If an account with that email exists, a password reset link has been sent'
+        message: "If an account with that email exists, a password reset link has been sent"
       });
     }
 
@@ -231,14 +231,14 @@ export const forgotPassword = async (req, res) => {
 
     res.json({
       success: true,
-      message: 'If an account with that email exists, a password reset link has been sent',
+      message: "If an account with that email exists, a password reset link has been sent",
       // In development, return the token for testing
       ...(process.env.NODE_ENV === 'development' && { resetToken })
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Server error during password reset request'
+      message: "Server error during password reset request"
     });
   }
 };
@@ -253,14 +253,14 @@ export const resetPassword = async (req, res) => {
     if (!token || !newPassword) {
       return res.status(400).json({
         success: false,
-        message: 'Token and new password are required'
+        message: "Token and new password are required"
       });
     }
 
     if (newPassword.length < 6) {
       return res.status(400).json({
         success: false,
-        message: 'Password must be at least 6 characters long'
+        message: "Password must be at least 6 characters long"
       });
     }
 
@@ -271,7 +271,7 @@ export const resetPassword = async (req, res) => {
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid or expired reset token'
+        message: "Invalid or expired reset token"
       });
     }
 
@@ -281,19 +281,19 @@ export const resetPassword = async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Password has been reset successfully'
+      message: "Password has been reset successfully"
     });
   } catch (error) {
     if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
       return res.status(400).json({
         success: false,
-        message: 'Invalid or expired reset token'
+        message: "Invalid or expired reset token"
       });
     }
 
     res.status(500).json({
       success: false,
-      message: 'Server error during password reset'
+      message: "Server error during password reset"
     });
   }
 };
@@ -309,14 +309,14 @@ export const changePassword = async (req, res) => {
     if (!currentPassword || !newPassword) {
       return res.status(400).json({
         success: false,
-        message: 'Current password and new password are required'
+        message: "Current password and new password are required"
       });
     }
 
     if (newPassword.length < 6) {
       return res.status(400).json({
         success: false,
-        message: 'New password must be at least 6 characters long'
+        message: "New password must be at least 6 characters long"
       });
     }
 
@@ -328,7 +328,7 @@ export const changePassword = async (req, res) => {
     if (!isCurrentPasswordValid) {
       return res.status(400).json({
         success: false,
-        message: 'Current password is incorrect'
+        message: "Current password is incorrect"
       });
     }
 
@@ -338,12 +338,12 @@ export const changePassword = async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Password changed successfully'
+      message: "Password changed successfully"
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Server error during password change'
+      message: "Server error during password change"
     });
   }
 };
@@ -355,12 +355,12 @@ export const logout = async (req, res) => {
   try {
     res.json({
       success: true,
-      message: 'Logout successful'
+      message: "Logout successful"
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: 'Server error during logout'
+      message: "Server error during logout"
     });
   }
 };
