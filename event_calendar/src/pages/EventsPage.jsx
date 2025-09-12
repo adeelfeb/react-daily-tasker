@@ -30,6 +30,7 @@ const EventsPage = () => {
           location: e.location,
           city: e.city,
           allDay: Boolean(e.allDay),
+          imageUrl: e.imageUrl,
         }));
         setEvents(normalized);
         setError(null);

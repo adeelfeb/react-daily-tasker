@@ -139,9 +139,6 @@ export const getEvent = async (req, res) => {
 // @access  Private
 export const createEvent = async (req, res) => {
   try {
-    console.log('Create event - Request body:', req.body);
-    console.log('Create event - Request file:', req.file);
-    
     const eventData = {
       ...req.body,
       createdBy: req.user.id
@@ -159,7 +156,6 @@ export const createEvent = async (req, res) => {
       eventData.imageUrl = req.file.path;
     }
 
-    console.log('Event data to create:', eventData);
     const event = await Event.create(eventData);
     
     await event.populate('createdBy', 'name email');

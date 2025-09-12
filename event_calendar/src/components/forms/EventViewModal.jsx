@@ -4,6 +4,7 @@ import './EventViewModal.css';
 
 const EventViewModal = ({ event, onClose }) => {
   const [formattedEvent, setFormattedEvent] = useState(null);
+  const [showImageModal, setShowImageModal] = useState(false);
 
   useEffect(() => {
     if (event) {
@@ -78,6 +79,29 @@ const EventViewModal = ({ event, onClose }) => {
             <div className="event-detail-value">{formattedEvent.title}</div>
           </div>
 
+          {formattedEvent.imageUrl && (
+            <div className="event-detail-item full-width">
+              <label>Poster:</label>
+              <div className="event-image-container">
+                <img 
+                  src={formattedEvent.imageUrl} 
+                  alt={formattedEvent.title}
+                  className="event-image"
+                  onClick={() => setShowImageModal(true)}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'block';
+                  }}
+                />
+                <div className="event-image-error" style={{ display: 'none' }}>
+                  <div className="image-placeholder">
+                    <span>Image not available</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="event-details-grid">
             <div className="event-detail-item">
               <label>Type:</label>
@@ -140,6 +164,29 @@ const EventViewModal = ({ event, onClose }) => {
           </button>
         </div>
       </div>
+
+      {/* Full-screen Image Modal */}
+      {showImageModal && formattedEvent.imageUrl && (
+        <div className="image-modal-overlay" onClick={() => setShowImageModal(false)}>
+          <div className="image-modal-container" onClick={(e) => e.stopPropagation()}>
+            <button 
+              className="image-modal-close" 
+              onClick={() => setShowImageModal(false)}
+              aria-label="Close image"
+            >
+              ×
+            </button>
+            <img 
+              src={formattedEvent.imageUrl} 
+              alt={formattedEvent.title}
+              className="image-modal-image"
+            />
+            <div className="image-modal-caption">
+              {formattedEvent.title}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

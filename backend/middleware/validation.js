@@ -4,8 +4,6 @@
 export const handleValidationErrors = (req, res, next) => {
   const errors = req.validationErrors || [];
   if (errors.length > 0) {
-    console.log('Validation errors:', errors);
-    console.log('Request body:', req.body);
     return res.status(400).json({
       success: false,
       message: 'Validation failed',

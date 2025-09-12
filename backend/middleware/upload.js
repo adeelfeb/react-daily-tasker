@@ -45,8 +45,6 @@ export const uploadMultiple = upload.array("images", 5);
 
 // Error handling middleware for multer errors
 export const handleUploadError = (error, req, res, next) => {
-  console.log('Upload error:', error);
-  
   if (error instanceof multer.MulterError) {
     if (error.code === "LIMIT_FILE_SIZE") {
       return res.status(400).json({
