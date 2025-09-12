@@ -78,14 +78,16 @@
 }
 
 .event-detail-item label {
-  display: block;
+  display: inline-block;
   font-weight: 600;
   color: var(--color-text-muted);
-  margin-bottom: 0.25rem;
+  margin-right: 0.5rem;
   font-size: 0.9rem;
+  min-width: 60px;
 }
 
 .event-detail-value {
+  display: inline-block;
   color: var(--color-text);
   font-size: 1rem;
   word-wrap: break-word;
@@ -95,12 +97,14 @@
 }
 
 .event-detail-value.description-text {
+  display: block;
   background: var(--color-surface-2);
   padding: 0.75rem;
   border-radius: 6px;
   border: 1px solid var(--color-border);
   white-space: pre-wrap;
   line-height: 1.5;
+  margin-top: 0.25rem;
 }
 
 /* Event Image Styles */
