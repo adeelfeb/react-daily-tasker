@@ -385,6 +385,28 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
                   </button>
                 </div>
               )}
+              {/* Show current image if editing and no new image selected */}
+              {event && event.imageUrl && !imagePreview && (
+                <div className="current-image-container">
+                  <label className="current-image-label">Current Image:</label>
+                  <div className="current-image-wrapper">
+                    <img 
+                      src={event.imageUrl} 
+                      alt={event.title}
+                      className="current-image"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'block';
+                      }}
+                    />
+                    <div className="current-image-error" style={{ display: 'none' }}>
+                      <div className="image-placeholder">
+                        <span>Image not available</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
             {errors.image && <span className="error-message">{errors.image}</span>}
             <small className="image-help-text">
