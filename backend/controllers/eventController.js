@@ -139,11 +139,27 @@ export const getEvent = async (req, res) => {
 // @access  Private
 export const createEvent = async (req, res) => {
   try {
+    console.log('Create event - Request body:', req.body);
+    console.log('Create event - Request file:', req.file);
+    
     const eventData = {
       ...req.body,
       createdBy: req.user.id
     };
 
+    // Convert string boolean values back to boolean
+    if (eventData.allDay === 'true') {
+      eventData.allDay = true;
+    } else if (eventData.allDay === 'false') {
+      eventData.allDay = false;
+    }
+
+    // Add image URL if image was uploaded
+    if (req.file) {
+      eventData.imageUrl = req.file.path;
+    }
+
+    console.log('Event data to create:', eventData);
     const event = await Event.create(eventData);
     
     await event.populate('createdBy', 'name email');
@@ -216,13 +232,24 @@ export const updateEvent = async (req, res) => {
     // Apply updates on the loaded document and save so validators run with proper context
     const updatableFields = [
       'title', 'description', 'start', 'end', 'type', 'location', 'city',
-      'allDay', 'attendees', 'isPublic', 'status', 'recurring'
+      'allDay', 'attendees', 'isPublic', 'status', 'recurring', 'imageUrl'
     ];
     updatableFields.forEach((field) => {
       if (Object.prototype.hasOwnProperty.call(req.body, field)) {
-        event.set(field, req.body[field]);
+        let value = req.body[field];
+        // Convert string boolean values back to boolean
+        if (field === 'allDay') {
+          if (value === 'true') value = true;
+          else if (value === 'false') value = false;
+        }
+        event.set(field, value);
       }
     });
+
+    // Add image URL if new image was uploaded
+    if (req.file) {
+      event.set('imageUrl', req.file.path);
+    }
 
     await event.save();
 

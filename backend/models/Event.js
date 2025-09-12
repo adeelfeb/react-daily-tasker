@@ -78,6 +78,10 @@ const eventSchema = new mongoose.Schema({
       type: Number,
       default: 1
     }
+  },
+  imageUrl: {
+    type: String,
+    trim: true
   }
 }, {
   timestamps: true

@@ -10,6 +10,7 @@ import {
 } from '../controllers/eventController.js';
 import { authenticateToken, requireAdmin } from '../middleware/auth.js';
 import { validateEvent, handleValidationErrors } from '../middleware/validation.js';
+import { uploadSingle, handleUploadError } from '../middleware/upload.js';
 
 const router = express.Router();
 
@@ -23,8 +24,8 @@ router.use(authenticateToken);
 router.get('/', getEvents);
 router.get('/range/:start/:end', getEventsByRange);
 router.get('/:id', getEvent);
-router.post('/', requireAdmin, validateEvent, handleValidationErrors, createEvent);
-router.put('/:id', requireAdmin, validateEvent, handleValidationErrors, updateEvent);
+router.post('/', requireAdmin, uploadSingle, handleUploadError, validateEvent, handleValidationErrors, createEvent);
+router.put('/:id', requireAdmin, uploadSingle, handleUploadError, validateEvent, handleValidationErrors, updateEvent);
 router.delete('/:id', requireAdmin, deleteEvent);
 
 export default router;

@@ -20,6 +20,14 @@ cp backend/.env.example backend/.env
 | `FRONTEND_URL` | Frontend URL for CORS | `http://localhost:5173` |
 | `SESSION_SECRET` | Session encryption key | `your-super-secret-session-key` |
 
+### Image Upload Variables (Required for Image Upload Feature)
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `CLOUDINARY_CLOUD_NAME` | Cloudinary cloud name | `your-cloudinary-cloud-name` |
+| `CLOUDINARY_API_KEY` | Cloudinary API key | `your-cloudinary-api-key` |
+| `CLOUDINARY_API_SECRET` | Cloudinary API secret | `your-cloudinary-api-secret` |
+
 ### Optional Variables
 
 | Variable | Description | Default |
@@ -63,6 +71,23 @@ cp event_calendar/.env.example event_calendar/.env
 | `REACT_APP_GOOGLE_MAPS_API_KEY` | Google Maps API key | `your-google-maps-api-key` |
 | `REACT_APP_ANALYTICS_ID` | Analytics tracking ID | `your-analytics-id` |
 
+## Cloudinary Setup (For Image Upload Feature)
+
+To enable the image upload feature, you need to set up a Cloudinary account:
+
+1. **Create Cloudinary Account:**
+   - Go to [Cloudinary](https://cloudinary.com) and sign up for a free account
+   - Verify your email address
+
+2. **Get Your Credentials:**
+   - Log in to your Cloudinary dashboard
+   - Go to the "Dashboard" section
+   - Copy your Cloud Name, API Key, and API Secret
+
+3. **Add to Environment:**
+   - Add the Cloudinary credentials to your backend `.env` file
+   - The image upload feature will work automatically once configured
+
 ## Security Notes
 
 ⚠️ **Important Security Considerations:**
@@ -72,14 +97,15 @@ cp event_calendar/.env.example event_calendar/.env
 3. **Environment-specific values** - Use different values for development, staging, and production
 4. **Database credentials** - Use environment-specific database credentials
 5. **API keys** - Keep external service API keys secure
+6. **Cloudinary credentials** - Keep your Cloudinary API secret secure
 
 ## Quick Start
 
 1. **Backend Setup:**
    ```bash
    cd backend
-   cp .env.example .env
-   # Edit .env with your MongoDB URI and other values
+   cp backend-env.example .env
+   # Edit .env with your MongoDB URI, Cloudinary credentials, and other values
    npm install
    npm start
    ```
@@ -87,7 +113,7 @@ cp event_calendar/.env.example event_calendar/.env
 2. **Frontend Setup:**
    ```bash
    cd event_calendar
-   cp .env.example .env
+   cp frontend-env.example .env
    # Edit .env with your API URL
    npm install
    npm run dev
@@ -103,3 +129,5 @@ For production deployment:
 4. Configure proper CORS origins
 5. Use environment-specific API URLs
 6. Enable HTTPS in production
+7. Configure production Cloudinary credentials
+8. Set up proper file upload limits and security

@@ -4,6 +4,8 @@
 export const handleValidationErrors = (req, res, next) => {
   const errors = req.validationErrors || [];
   if (errors.length > 0) {
+    console.log('Validation errors:', errors);
+    console.log('Request body:', req.body);
     return res.status(400).json({
       success: false,
       message: 'Validation failed',
@@ -79,9 +81,8 @@ export const validateEvent = (req, res, next) => {
     const startDate = new Date(start);
     if (isNaN(startDate.getTime())) {
       errors.push({ field: 'start', message: 'Start date must be a valid date' });
-    } else if (startDate < new Date()) {
-      errors.push({ field: 'start', message: 'Start date cannot be in the past' });
     }
+    // Removed past date validation to allow past events
   }
 
   // Validate end date
@@ -111,9 +112,12 @@ export const validateEvent = (req, res, next) => {
     errors.push({ field: 'location', message: 'Location cannot exceed 100 characters' });
   }
 
-  // Validate allDay
-  if (allDay !== undefined && typeof allDay !== 'boolean') {
-    errors.push({ field: 'allDay', message: 'All day must be a boolean value' });
+  // Validate allDay (handle string values from FormData)
+  if (allDay !== undefined) {
+    const allDayValue = allDay === 'true' || allDay === true;
+    if (typeof allDay !== 'boolean' && allDay !== 'true' && allDay !== 'false') {
+      errors.push({ field: 'allDay', message: 'All day must be a boolean value' });
+    }
   }
 
   req.validationErrors = errors;

@@ -120,10 +120,10 @@ const AdminDashboard = () => {
     setDraftEvent(null);
   };
 
-  const handleEventFormSubmit = async (eventData) => {
+  const handleEventFormSubmit = async (eventData, imageFile) => {
     try {
       if (selectedEvent) {
-        const res = await eventsAPI.updateEvent(selectedEvent.id, eventData);
+        const res = await eventsAPI.updateEvent(selectedEvent.id, eventData, imageFile);
         const updated = res?.data?.data;
         if (updated) {
           setEvents((prev) => prev.map((ev) => (ev.id === selectedEvent.id ? {
@@ -140,6 +140,7 @@ const AdminDashboard = () => {
             attendees: updated.attendees || [],
             isPublic: updated.isPublic,
             status: updated.status,
+            imageUrl: updated.imageUrl,
           } : ev)));
           const msg = res?.data?.message || 'Event updated successfully';
           errorHandler.success(msg);
@@ -151,7 +152,7 @@ const AdminDashboard = () => {
           return { message: msg };
         }
       } else {
-        const res = await eventsAPI.createEvent(eventData);
+        const res = await eventsAPI.createEvent(eventData, imageFile);
         const created = res?.data?.data;
         if (created) {
           const normalized = {
@@ -168,6 +169,7 @@ const AdminDashboard = () => {
             attendees: created.attendees || [],
             isPublic: created.isPublic,
             status: created.status,
+            imageUrl: created.imageUrl,
           };
           setEvents((prev) => [...prev, normalized]);
           const msg = res?.data?.message || 'Event created successfully';

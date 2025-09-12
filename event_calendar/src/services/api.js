@@ -52,8 +52,52 @@ export const eventsAPI = {
   getEvents: (params = {}) => api.get('/events', { params }),
   getEvent: (id) => api.get(`/events/${id}`),
   getPublicEvents: () => api.get('/events/public'),
-  createEvent: (eventData) => api.post('/events', eventData),
-  updateEvent: (id, eventData) => api.put(`/events/${id}`, eventData),
+  createEvent: (eventData, imageFile = null) => {
+    const formData = new FormData();
+    
+    // Add all event data to FormData
+    Object.keys(eventData).forEach(key => {
+      if (eventData[key] !== null && eventData[key] !== undefined) {
+        // Convert boolean values to strings for FormData
+        const value = typeof eventData[key] === 'boolean' ? eventData[key].toString() : eventData[key];
+        formData.append(key, value);
+      }
+    });
+    
+    // Add image file if provided
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+    
+    return api.post('/events', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  updateEvent: (id, eventData, imageFile = null) => {
+    const formData = new FormData();
+    
+    // Add all event data to FormData
+    Object.keys(eventData).forEach(key => {
+      if (eventData[key] !== null && eventData[key] !== undefined) {
+        // Convert boolean values to strings for FormData
+        const value = typeof eventData[key] === 'boolean' ? eventData[key].toString() : eventData[key];
+        formData.append(key, value);
+      }
+    });
+    
+    // Add image file if provided
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+    
+    return api.put(`/events/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
   deleteEvent: (id) => api.delete(`/events/${id}`),
 };
 

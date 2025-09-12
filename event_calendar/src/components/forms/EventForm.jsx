@@ -15,6 +15,8 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
     city: '',
     allDay: false,
   });
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -45,6 +47,10 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
         city: event.city || '',
         allDay: event.allDay || false,
       });
+      // Set image preview if event has an image
+      if (event.imageUrl) {
+        setImagePreview(event.imageUrl);
+      }
     } else if (initialDates) {
       // Creating a new event with prefilled dates
       setFormData(prev => ({
@@ -68,6 +74,50 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
         ...prev,
         [name]: ''
       }));
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setErrors(prev => ({
+          ...prev,
+          image: 'Please select a valid image file'
+        }));
+        return;
+      }
+      
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors(prev => ({
+          ...prev,
+          image: 'Image size must be less than 5MB'
+        }));
+        return;
+      }
+      
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+      
+      // Clear image error
+      if (errors.image) {
+        setErrors(prev => ({
+          ...prev,
+          image: ''
+        }));
+      }
+    }
+  };
+
+  const removeImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    // Clear the file input
+    const fileInput = document.getElementById('image');
+    if (fileInput) {
+      fileInput.value = '';
     }
   };
 
@@ -112,11 +162,11 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
 
       const eventData = {
         ...formData,
-        start: clientStart,
-        end: clientEnd,
+        start: clientStart.toISOString(),
+        end: clientEnd.toISOString(),
       };
 
-      const result = await onSubmit(eventData);
+      const result = await onSubmit(eventData, imageFile);
       // Success notification is handled by the parent component
       // Ensure the notification is enqueued and rendered before closing
       await new Promise((resolve) => {
@@ -161,6 +211,8 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
       city: '',
       allDay: false,
     });
+    setImageFile(null);
+    setImagePreview(null);
     setErrors({});
     onClose();
   };
@@ -304,6 +356,40 @@ const EventForm = ({ event, initialDates, onSubmit, onClose, onDelete }) => {
               rows="3"
               placeholder="Enter event description"
             />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="image">Event Poster Image</label>
+            <div className="image-upload-container">
+              <input
+                type="file"
+                id="image"
+                name="image"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="image-input"
+              />
+              <label htmlFor="image" className="image-upload-label">
+                {imagePreview ? 'Change Image' : 'Choose Image'}
+              </label>
+              {imagePreview && (
+                <div className="image-preview-container">
+                  <img src={imagePreview} alt="Preview" className="image-preview" />
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="remove-image-btn"
+                    title="Remove image"
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+            </div>
+            {errors.image && <span className="error-message">{errors.image}</span>}
+            <small className="image-help-text">
+              Supported formats: JPG, PNG, GIF, WebP. Max size: 5MB
+            </small>
           </div>
 
           <div className="form-group checkbox-group">

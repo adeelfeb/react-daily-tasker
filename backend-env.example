@@ -25,6 +25,12 @@ EMAIL_PASS=your-app-password
 MAX_FILE_SIZE=5242880
 UPLOAD_PATH=./uploads
 
+# Cloudinary Configuration (Required for Image Upload Feature)
+# Get these values from your Cloudinary dashboard: https://cloudinary.com/console
+CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
+CLOUDINARY_API_KEY=your-cloudinary-api-key
+CLOUDINARY_API_SECRET=your-cloudinary-api-secret
+
 # Rate Limiting
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
