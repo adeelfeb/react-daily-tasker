@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import config from "./config.js";
 
 let cached = global.mongoose;
 
@@ -7,9 +8,9 @@ if (!cached) {
 }
 
 async function connectDB() {
-  if (!process.env.MONGODB_URI) {
+  if (!config.db.uri) {
     const message = "MONGODB_URI is not set in environment variables";
-    if (process.env.NODE_ENV !== "production") {
+    if (config.debug.isDevelopment) {
       console.error(message);
     }
     throw new Error(message);
@@ -20,21 +21,20 @@ async function connectDB() {
   }
 
   if (!cached.promise) {
-    if (process.env.NODE_ENV !== "production") {
+    if (config.debug.isDevelopment) {
       console.log("Connecting to MongoDB...");
     }
     
     // If the SRV URI does not include a database path, allow providing it via MONGO_DB_NAME
     const connectionOptions = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      ...config.db.options,
       serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
       ...(process.env.MONGO_DB_NAME ? { dbName: process.env.MONGO_DB_NAME } : {}),
     };
 
-    cached.promise = mongoose.connect(process.env.MONGODB_URI, connectionOptions).then((mongoose) => {
-      if (process.env.NODE_ENV !== "production") {
+    cached.promise = mongoose.connect(config.db.uri, connectionOptions).then((mongoose) => {
+      if (config.debug.isDevelopment) {
         console.log(`MongoDB Connected: ${mongoose.connection.host}`);
       }
       return mongoose;
@@ -45,7 +45,7 @@ async function connectDB() {
     cached.conn = await cached.promise;
   } catch (err) {
     cached.promise = null; // reset on failure
-    if (process.env.NODE_ENV !== "production") {
+    if (config.debug.isDevelopment) {
       console.error("Database connection error:", err?.message || err);
       if (err?.reason?.code) {
         console.error("Mongo error code:", err.reason.code);

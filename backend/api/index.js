@@ -3,30 +3,25 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import session from "express-session";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import { errorHandler, notFound } from "../middleware/errorHandler.js";
 import connectDB from "../config/connectDB.js";
+import config from "../config/config.js";
 
 // Import routes
 import authRoutes from "../routes/auth.js";
 import eventRoutes from "../routes/events.js";
 import userRoutes from "../routes/users.js";
 
-// Load environment variables (only in development)
-if (process.env.NODE_ENV !== "production") {
-  dotenv.config();
-}
-
 // Connect to database on startup (for local development)
-if (process.env.MONGODB_URI) {
+if (config.db.uri) {
   connectDB().catch(err => {
-    if (process.env.NODE_ENV !== "production") {
+    if (config.debug.isDevelopment) {
       console.error("Failed to connect to database:", err.message);
     }
     // Don't exit in serverless environment
   });
 } else {
-  if (process.env.NODE_ENV !== "production") {
+  if (config.debug.isDevelopment) {
     console.warn("MONGODB_URI not found, database connection skipped");
   }
 }
@@ -81,20 +76,14 @@ app.get("/apple-touch-icon.png", (req, res) => {
 //   maxAge: 86400 // Cache preflight for 24 hours
 // }));
 
-// CORS configuration - Restrict to specific origins
-const allowedOrigins = [
-  "https://calander-frontend.vercel.app", // Your deployed frontend
-  /^http:\/\/localhost:\d+$/, // Localhost with any port
-  /^https:\/\/localhost:\d+$/, // HTTPS localhost with any port
-];
-
+// CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
     // Check if origin is in allowed list
-    const isAllowed = allowedOrigins.some(allowedOrigin => {
+    const isAllowed = config.cors.allowedOrigins.some(allowedOrigin => {
       if (typeof allowedOrigin === "string") {
         return origin === allowedOrigin;
       } else if (allowedOrigin instanceof RegExp) {
@@ -109,26 +98,13 @@ const corsOptions = {
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true, // Allow credentials
-  optionsSuccessStatus: 200,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"],
-  allowedHeaders: [
-    "Content-Type", 
-    "Authorization", 
-    "X-Requested-With",
-    "Accept",
-    "Origin",
-    "Access-Control-Request-Method",
-    "Access-Control-Request-Headers"
-  ],
-  exposedHeaders: [
-    "Content-Range", 
-    "X-Content-Range",
-    "Access-Control-Allow-Origin",
-    "Access-Control-Allow-Credentials"
-  ],
-  preflightContinue: false,
-  maxAge: 86400 // Cache preflight for 24 hours
+  credentials: config.cors.credentials,
+  optionsSuccessStatus: config.cors.optionsSuccessStatus,
+  methods: config.cors.methods,
+  allowedHeaders: config.cors.allowedHeaders,
+  exposedHeaders: config.cors.exposedHeaders,
+  preflightContinue: config.cors.preflightContinue,
+  maxAge: config.cors.maxAge,
 };
 
 app.use(cors(corsOptions));
@@ -147,23 +123,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Session configuration - optimized for cross-origin and serverless
-app.use(session({
-  secret: process.env.SESSION_SECRET || "your-super-secret-session-key",
-  resave: false,
-  saveUninitialized: false,
-  // Use memory store for serverless (sessions won't persist across function invocations)
-  // In production, consider using Redis or another external store
-  cookie: {
-    secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-    httpOnly: true,
-    maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // Cross-site cookies for production
-    domain: process.env.NODE_ENV === "production" ? undefined : undefined, // Let browser handle domain
-  },
-  // Additional session options for serverless
-  name: "sessionId", // Custom session name
-  rolling: true, // Reset expiration on activity
-}));
+app.use(session(config.session));
 
 // Database connection check middleware - applied globally
 const checkDatabaseConnection = async (req, res, next) => {
@@ -260,11 +220,14 @@ app.get("/api/debug", async (req, res) => {
   res.json({
     success: true,
     environment: {
-      NODE_ENV: process.env.NODE_ENV,
+      NODE_ENV: config.server.nodeEnv,
       VERCEL: process.env.VERCEL,
-      MONGODB_URI: process.env.MONGODB_URI ? "Set" : "Not set",
-      FRONTEND_URL: process.env.FRONTEND_URL || "Not set",
-      JWT_SECRET: process.env.JWT_SECRET ? "Set" : "Not set"
+      MONGODB_URI: config.db.uri ? "Set" : "Not set",
+      FRONTEND_URL: config.server.frontendUrl,
+      JWT_SECRET: config.jwt.secret ? "Set" : "Not set",
+      CLOUDINARY_CLOUD_NAME: config.cloudinary.cloud_name ? "Set" : "Not set",
+      CLOUDINARY_API_KEY: config.cloudinary.api_key ? "Set" : "Not set",
+      CLOUDINARY_API_SECRET: config.cloudinary.api_secret ? "Set" : "Not set"
     },
     database: dbInfo,
     timestamp: new Date().toISOString()
@@ -279,7 +242,7 @@ app.get("/", (req, res) => {
       message: "Event Calendar API",
       version: "1.0.0",
       status: "running",
-      FRONTEND_URL: process.env.FRONTEND_URL,
+      FRONTEND_URL: config.server.frontendUrl,
       updated: new Date().toLocaleString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "numeric", minute: "2-digit", hour12: true })
     });
   } catch (error) {
@@ -296,12 +259,10 @@ app.use(notFound);
 app.use(errorHandler);
 
 // Only start server if not in Vercel environment
-if (process.env.NODE_ENV !== "production" || process.env.VERCEL !== "1") {
-  const PORT = process.env.PORT || 5000;
-  
-  app.listen(PORT, () => {
-    console.log(`Server running in ${process.env.NODE_ENV || "development"} mode on port ${PORT}`);
-    console.log(`API Documentation: http://localhost:${PORT}`);
+if (!config.debug.isProduction || !config.debug.isVercel) {
+  app.listen(config.server.port, () => {
+    console.log(`Server running in ${config.server.nodeEnv} mode on port ${config.server.port}`);
+    console.log(`API Documentation: http://localhost:${config.server.port}`);
   });
 }
 
